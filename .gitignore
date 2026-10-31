@@ -1,0 +1,16 @@
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs / temp
+*.log
+*.tmp
+
+# Sass source map (style.css itself IS committed — the live server does not compile SCSS)
+assets/css/style.css.map
+
+# Secrets (e.g. SMTP passwords for the contact form later)
+.env
