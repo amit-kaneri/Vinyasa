@@ -113,7 +113,6 @@ const controlOptions = (wrap) => {
     };
 
     return {
-        pagination: { el: wrap.querySelector('.slider-controls__progress'), type: 'progressbar' },
         navigation: { prevEl: wrap.querySelector('.slider-controls__prev'), nextEl: wrap.querySelector('.slider-controls__next') },
         on: { init: update, slideChange: update, reachEnd: update },
     };
@@ -273,32 +272,9 @@ document.querySelectorAll('[data-reviews]').forEach((section) => {
     initSlider(panels.find((p) => !p.hidden));
 });
 
-/* FAQ — desktop: list + panel (one always open) · mobile: accordion (can close) */
-document.querySelectorAll('[data-faq]').forEach((section) => {
-    const items = [...section.querySelectorAll('.faq-item')];
-    const desktop = window.matchMedia('(min-width: 992px)');
-
-    const setOpen = (item, open) => {
-        item.classList.toggle('is-active', open);
-        item.querySelector('[data-faq-q]').setAttribute('aria-expanded', open);
-    };
-
-    items.forEach((item) => {
-        item.querySelector('[data-faq-q]').addEventListener('click', () => {
-            const isOpen = item.classList.contains('is-active');
-            if (isOpen && desktop.matches) return;
-            items.forEach((other) => setOpen(other, other === item ? !isOpen : false));
-        });
-    });
-
-    // the desktop panel should never be empty
-    desktop.addEventListener('change', (e) => {
-        if (e.matches && !items.some((item) => item.classList.contains('is-active'))) setOpen(items[0], true);
-    });
-});
-
 /* Popups — <dialog class="modal">, opened by [data-modal-open="id"]. Esc, × or a backdrop click closes it.
-   Native showModal() traps focus and returns it to the button; Lenis stops while a popup is open. */
+   Native showModal() traps focus and returns it to the button; Lenis stops while a popup is open.
+   Fires "modal:open" / "modal:close" on document so moving parts behind the popup (highlights strip) can pause. */
 document.querySelectorAll('[data-modal-open]').forEach((btn) => {
     const modal = document.getElementById(btn.dataset.modalOpen);
     if (!modal) return;
@@ -306,6 +282,7 @@ document.querySelectorAll('[data-modal-open]').forEach((btn) => {
         modal.showModal();
         document.body.classList.add('modal-open');
         if (lenis) lenis.stop();
+        document.dispatchEvent(new Event('modal:open'));
     });
 });
 
@@ -318,6 +295,7 @@ document.querySelectorAll('dialog.modal').forEach((modal) => {
     modal.addEventListener('close', () => {
         document.body.classList.remove('modal-open');
         if (lenis) lenis.start();
+        document.dispatchEvent(new Event('modal:close'));
     });
 });
 
@@ -393,27 +371,241 @@ document.querySelectorAll('[data-gallery]').forEach((section) => {
     });
 });
 
+
 /* ==========================================================================
-   Room photo panel (course fees) — hover / focus a room card or click a tab → show that room's photo
+   Highlights (course page) — endless photo strip: drifts slowly and evenly (marquee: autoplay delay 0 + long linear speed),
+   stops right where it is on hover, can be dragged (no arrow buttons — user). 4 in view ≥1200 · 3 ≥768 · 2 on phones.
+   With reduced motion it does not drift (drag only).
+   Hover "freezes" the strip exactly in place (Swiper alone would only pause after the current long drift ends).
    ========================================================================== */
 
-document.querySelectorAll('[data-room-view]').forEach((view) => {
-    const photos = [...view.querySelectorAll('[data-room-photo]')];
-    const tabs = [...view.querySelectorAll('[data-room-tab]')];
-    const cards = [...view.closest('section').querySelectorAll('[data-room-card]')];
+document.querySelectorAll('[data-highlights]').forEach((wrap) => {
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const drift = 6000; // ms per photo while drifting
+    let hovering = false;
 
-    const show = (i) => {
-        photos.forEach((photo, n) => photo.classList.toggle('is-active', n === i));
-        cards.forEach((card, n) => card.classList.toggle('is-active', n === i));
-        tabs.forEach((tab, n) => {
-            tab.classList.toggle('is-active', n === i);
-            tab.setAttribute('aria-pressed', n === i);
+    const swiper = new Swiper(wrap.querySelector('.swiper'), {
+        slidesPerView: 2,
+        spaceBetween: 14,
+        loop: true,
+        speed: drift,
+        grabCursor: true,
+        autoplay: calm ? false : { delay: 0, disableOnInteraction: false },
+        breakpoints: {
+            768: { slidesPerView: 3, spaceBetween: 20 },
+            1200: { slidesPerView: 4, spaceBetween: 28 },
+        },
+    });
+
+    // stop the drift exactly at the current position
+    const freeze = () => {
+        if (swiper.autoplay) swiper.autoplay.stop();
+        const x = swiper.getTranslate();
+        swiper.setTransition(0);
+        swiper.setTranslate(x);
+        swiper.animating = false;
+    };
+
+    let popupOpen = false;
+
+    // carry on drifting (not while the pointer rests on the strip or a popup is open)
+    const resume = () => {
+        if (!calm && !hovering && !popupOpen) swiper.autoplay.start();
+    };
+
+    // glide on to the nearest photo, then keep drifting
+    const glideOn = () => {
+        swiper.slideTo(swiper.activeIndex, drift / 2);
+        swiper.once('transitionEnd', resume);
+    };
+
+    if (!calm) {
+        wrap.addEventListener('mouseenter', () => { hovering = true; freeze(); });
+        wrap.addEventListener('mouseleave', () => { hovering = false; glideOn(); });
+        // hold still behind a popup — a moving page under the backdrop makes the popup shimmer on phones
+        document.addEventListener('modal:open', () => { popupOpen = true; freeze(); });
+        document.addEventListener('modal:close', () => { popupOpen = false; if (!hovering) glideOn(); });
+    }
+});
+
+/* ==========================================================================
+   Accommodation (course page) — room tabs + one photo viewer per room (main Swiper + thumbnail strip).
+   A room's Swipers are made the first time it is shown (hidden panels can't be measured). Arrow keys move between tabs.
+   ========================================================================== */
+
+document.querySelectorAll('[data-rooms]').forEach((section) => {
+    const tabs = [...section.querySelectorAll('[data-room-tab]')];
+    const panels = [...section.querySelectorAll('[data-room-panel]')];
+    const made = new Set();
+
+    const build = (panel) => {
+        if (made.has(panel)) return;
+        made.add(panel);
+        const main = panel.querySelector('.room-panel__main');
+        if (!main) return; // room without photos ("Photos coming soon")
+        const count = panel.querySelector('.room-panel__count strong');
+        const thumbsEl = panel.querySelector('.room-panel__thumbs'); // only when the room has 2+ photos
+        const thumbs = thumbsEl && new Swiper(thumbsEl, {
+            slidesPerView: 'auto',
+            spaceBetween: 10,
+            freeMode: true,
+            watchSlidesProgress: true,
+        });
+        new Swiper(main, {
+            speed: 800,
+            grabCursor: true,
+            effect: 'fade',
+            fadeEffect: { crossFade: true },
+            keyboard: { enabled: true, onlyInViewport: true },
+            navigation: { prevEl: panel.querySelector('.room-panel__prev'), nextEl: panel.querySelector('.room-panel__next') },
+            ...(thumbs ? { thumbs: { swiper: thumbs } } : {}),
+            on: { slideChange: (s) => { if (count) count.textContent = pad2(s.activeIndex + 1); } },
         });
     };
 
-    tabs.forEach((tab, i) => tab.addEventListener('click', () => show(i)));
-    cards.forEach((card, i) => {
-        card.addEventListener('mouseenter', () => show(i));
-        card.addEventListener('focusin', () => show(i));
+    const show = (i, focus = false) => {
+        tabs.forEach((tab, n) => {
+            const on = n === i;
+            tab.classList.toggle('is-active', on);
+            tab.setAttribute('aria-selected', on);
+            tab.tabIndex = on ? 0 : -1;
+        });
+        panels.forEach((panel, n) => {
+            const on = n === i;
+            panel.hidden = !on;
+            panel.classList.toggle('is-active', on);
+        });
+        build(panels[i]);
+        if (focus) tabs[i].focus();
+        // phones: keep the chosen pill in view in the sideways row
+        tabs[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    };
+
+    tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => show(i));
+        tab.addEventListener('keydown', (ev) => {
+            const keys = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };
+            if (!(ev.key in keys)) return;
+            ev.preventDefault();
+            show((i + keys[ev.key] + tabs.length) % tabs.length, true);
+        });
+    });
+
+    build(panels[0]);
+
+    // arrows at both ends of the pill row — only while the pills overflow; each click scrolls ~ one view
+    const bar = section.querySelector('.rooms__tabbar');
+    const row = section.querySelector('.rooms__tabs');
+    const prev = section.querySelector('.rooms__scroll--prev');
+    const next = section.querySelector('.rooms__scroll--next');
+    if (!bar || !row || !prev || !next) return;
+
+    const update = () => {
+        const max = row.scrollWidth - row.clientWidth;
+        const canPrev = row.scrollLeft > 2;
+        const canNext = row.scrollLeft < max - 2;
+        bar.classList.toggle('is-overflowing', max > 2);
+        bar.classList.toggle('can-prev', canPrev);
+        bar.classList.toggle('can-next', canNext);
+        prev.disabled = !canPrev;
+        next.disabled = !canNext;
+    };
+    const step = (dir) => row.scrollBy({ left: dir * row.clientWidth * 0.7, behavior: 'smooth' });
+
+    prev.addEventListener('click', () => step(-1));
+    next.addEventListener('click', () => step(1));
+    row.addEventListener('scroll', update, { passive: true });
+    new ResizeObserver(update).observe(row);
+    update();
+});
+
+/* ==========================================================================
+   Daily schedule timeline (course page) — the gold line fills down to the middle of the screen while scrolling and every
+   row it has reached lights up (.is-on), the latest one glows (.is-current). With reduced motion the line is simply full.
+   ========================================================================== */
+
+document.querySelectorAll('[data-day-line]').forEach((wrap) => {
+    const track = wrap.querySelector('.day-line__list') || wrap; // the line lives on the row list (below the column header)
+    const items = [...wrap.querySelectorAll('.day-line__item')];
+    const dots = items.map((item) => item.querySelector('.day-line__dot'));
+    let queued = false;
+
+    const update = () => {
+        queued = false;
+        const box = track.getBoundingClientRect();
+        const mark = reduceMotion ? Infinity : window.innerHeight * 0.6; // "reading line" a bit below the middle
+        track.style.setProperty('--fill', `${Math.max(0, Math.min(box.height, mark - box.top))}px`);
+        let last = -1;
+        dots.forEach((dot, i) => {
+            const r = dot.getBoundingClientRect();
+            const on = r.top + r.height / 2 <= mark;
+            items[i].classList.toggle('is-on', on);
+            if (on) last = i;
+        });
+        items.forEach((item, i) => item.classList.toggle('is-current', i === last && !reduceMotion));
+    };
+    const queue = () => {
+        if (!queued) { queued = true; requestAnimationFrame(update); }
+    };
+
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    update();
+});
+
+/* ==========================================================================
+   Curriculum pillars (course page) — below 992px the 3 pillars become tabs, one list at a time (.is-tabbed hides the others;
+   from 992px all three show side by side and the tabs are hidden by CSS). Arrow keys move between tabs.
+   ========================================================================== */
+
+document.querySelectorAll('[data-pillars]').forEach((wrap) => {
+    const tabs = [...wrap.querySelectorAll('[data-pillar-tab]')];
+    const cols = [...wrap.querySelectorAll('[data-pillar]')];
+    if (tabs.length !== cols.length) return;
+
+    const show = (i, focus = false) => {
+        tabs.forEach((tab, n) => {
+            tab.classList.toggle('is-active', n === i);
+            tab.setAttribute('aria-selected', n === i);
+            tab.tabIndex = n === i ? 0 : -1;
+        });
+        cols.forEach((col, n) => col.classList.toggle('is-active', n === i));
+        if (focus) tabs[i].focus();
+    };
+
+    tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => show(i));
+        tab.addEventListener('keydown', (ev) => {
+            const keys = { ArrowRight: 1, ArrowLeft: -1 };
+            if (!(ev.key in keys)) return;
+            ev.preventDefault();
+            show((i + keys[ev.key] + tabs.length) % tabs.length, true);
+        });
+    });
+
+    wrap.classList.add('is-tabbed');
+    show(0);
+});
+
+/* ==========================================================================
+   Round card slider (retreat page "Who it is for") — Swiper with the shared slider controls. 1.3 cards on phones,
+   2.3 from 576px, 3.3 from 768px, 4 from 1200px.
+   ========================================================================== */
+
+document.querySelectorAll('[data-round-slider]').forEach((wrap) => {
+    new Swiper(wrap.querySelector('.swiper'), {
+        slidesPerView: 1.3,
+        spaceBetween: 20,
+        speed: 700,
+        grabCursor: true,
+        keyboard: { enabled: true, onlyInViewport: true },
+        breakpoints: {
+            576: { slidesPerView: 2.3, spaceBetween: 24 },
+            768: { slidesPerView: 3.3, spaceBetween: 28 },
+            1200: { slidesPerView: 4, spaceBetween: 28 },
+        },
+        // pagination dots between the arrows (user)
+        pagination: { el: wrap.querySelector('.slider-controls__dots'), clickable: true },
+        navigation: { prevEl: wrap.querySelector('.slider-controls__prev'), nextEl: wrap.querySelector('.slider-controls__next') },
     });
 });

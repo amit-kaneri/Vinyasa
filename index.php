@@ -74,10 +74,10 @@
         <div class="container welcome__grid">
             <div class="welcome__media" data-reveal>
                 <figure class="arch-img welcome__arch welcome__arch--main">
-                    <img src="<?=$link?>assets/images/home/img4.webp" alt="Students sharing a meal in the open-air pavilion above the jungle in Ubud" width="599" height="701" loading="lazy">
+                    <img src="<?=$link?>assets/images/home/intro-img-1.webp" alt="Fire ceremony with a clay havan bowl on a carpet of marigold flowers" width="600" height="900" loading="lazy">
                 </figure>
                 <figure class="arch-img arch-img--ring welcome__arch welcome__arch--side">
-                    <img src="<?=$link?>assets/images/about-us/image-3.webp" alt="Marble-floored hall with a chandelier at the Ubud campus" width="1000" height="689" loading="lazy">
+                    <img src="<?=$link?>assets/images/home/intro-img-2.webp" alt="Marble-floored hall with a chandelier at the Ubud campus" width="1000" height="689" loading="lazy">
                 </figure>
                 <span class="welcome__tag">Ubud · Bali</span>
             </div>
@@ -116,21 +116,21 @@
     // focus = which part of the photo stays in the 4:3 crop: center | mid | low
     $courses = [
         [
-            'img'   => '200-hour-ttc.webp',
-            'alt'   => 'Students in white holding their certificates on a path beside rice fields in Ubud',
-            'focus' => 'low',
+            'img'   => 'home/200-hour-ttc.webp',
+            'alt'   => 'Student stretching her arms overhead on a yoga mat during an asana class',
+            'focus' => 'mid',
             'tag'   => 'Foundation',
-            'days'  => 20,
+            'days'  => 15,
             'meta'  => 'Yoga Alliance RYS 200 · Ubud',
             'title' => '200 Hour Yoga Teacher Training',
             'text'  => 'Your first teacher training. Open to beginners. Graduates are eligible to apply for RYT 200 with Yoga Alliance.',
             'label' => 'From',
-            'price' => '$1,299',
+            'price' => '$1,699',
             'url'   => $link . '200-hour-yoga-teacher-training-in-bali.php',
         ],
         [
-            'img'   => '300-hour-ttc.webp',
-            'alt'   => 'A group of students in white gathered beside the rice fields in Ubud',
+            'img'   => 'home/300-hour-ttc.webp',
+            'alt'   => 'Student meditating cross-legged on a yoga mat in the shala',
             'focus' => 'center',
             'tag'   => 'Advanced',
             'days'  => 25,
@@ -194,7 +194,6 @@
             <!-- Slider controls (mobile/tablet only): 01 / 03 · progress line · prev / next -->
             <div class="slider-controls slider-controls--mobile">
                 <span class="slider-controls__count"><strong>01</strong> / <?= sprintf('%02d', count($courses)) ?></span>
-                <span class="slider-controls__progress"></span>
                 <span class="slider-controls__nav">
                     <button type="button" class="circle-btn slider-controls__prev" aria-label="Previous course"><?= $arrow ?></button>
                     <button type="button" class="circle-btn slider-controls__next" aria-label="Next course"><?= $arrow ?></button>
@@ -220,7 +219,7 @@
         // TODO: confirm Bali room types + meals with the school (private/shared + vegetarian meals are verified for Rishikesh)
         ['icon' => 'bed',      'title' => 'Elegant Rooms',             'text' => 'Calm, comfortable rooms with private and shared options, and freshly prepared vegetarian meals.'],
         ['icon' => 'globe',    'title' => 'A Global Community',        'text' => 'Students from more than 100 countries have trained with us.'],
-        ['icon' => 'calendar', 'title' => 'Earned, Not Bought',        'text' => 'Certification needs at least 90% attendance and passing the course evaluation. Payment alone is not enough.'],
+        ['icon' => 'certificate', 'title' => 'Earned, Not Bought',        'text' => 'Certification needs at least 90% attendance and passing the course evaluation. Payment alone is not enough.'],
     ];
     ?>
     <section class="why section-bg spacing">
@@ -232,7 +231,7 @@
                 <p class="para">What you can expect from us, in plain facts.</p>
 
                 <figure class="why__photo">
-                    <img src="<?=$link?>assets/images/home/img3.webp" alt="Students sharing a meal in the open-air dining pavilion above the jungle in Ubud" width="600" height="1066" loading="lazy">
+                    <img src="<?=$link?>assets/images/home/why-choose.webp" alt="Student in a seated twist on a yoga mat during class" width="600" height="900" loading="lazy">
                     <figcaption class="why__rating">
                         <span class="why__rating-icon"><?= icon('star') ?></span>
                         <strong>4.8</strong>
@@ -245,7 +244,7 @@
                 <?php foreach ($reasons as $i => $r): ?>
                 <li class="why-item" data-reveal>
                     <span class="why-item__top">
-                        <span class="why-item__icon"><?= icon($r['icon']) ?></span>
+                        <span class="why-item__icon"><?= feature_icon($r['icon']) ?></span>
                         <span class="why-item__num"><?= sprintf('%02d', $i + 1) ?></span>
                     </span>
                     <h3 class="why-item__title"><?= $e($r['title']) ?></h3>
@@ -415,7 +414,6 @@
 
                     <div class="slider-controls">
                         <span class="slider-controls__count"><strong>01</strong> / <?= sprintf('%02d', count($p['reviews'])) ?></span>
-                        <span class="slider-controls__progress"></span>
                         <span class="slider-controls__nav">
                             <button type="button" class="circle-btn slider-controls__prev" aria-label="Previous review"><?= $arrow ?></button>
                             <button type="button" class="circle-btn slider-controls__next" aria-label="Next review"><?= $arrow ?></button>
@@ -560,7 +558,7 @@
         ],
         [
             'q' => 'How long are the courses in Bali and what do they cost?',
-            'a' => 'The 200-hour training runs for 20 days and starts from $1,299. The 300-hour training runs for 25 days and starts from $1,490. Retreat prices are shared on request. Each course page lists the current dates and fees.',
+            'a' => 'The 200-hour training runs for 15 days and starts from $1,699. The 300-hour training runs for 25 days and starts from $1,490. Retreat prices are shared on request. Each course page lists the current dates and fees.',
         ],
         [
             'q' => 'What do I need to join the 300-hour course?',
@@ -583,63 +581,15 @@
             'a' => 'Course fees are non-refundable. If you cannot attend, you can transfer once to a future batch within 12 months, as long as you ask at least 15 days before your course starts. Please read the full refund policy before you book.',
         ],
     ];
-    $faq_schema = [
-        '@context'   => 'https://schema.org',
-        '@type'      => 'FAQPage',
-        'mainEntity' => array_map(fn ($f) => [
-            '@type'          => 'Question',
-            'name'           => $f['q'],
-            'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']],
-        ], $faqs),
-    ];
     ?>
-    <section class="faq spacing" id="faq" data-faq>
-        <!-- Desktop: question list (col 1) · answer panel with arch photo (col 2, all answers stacked in one cell).
-             Mobile: each answer opens under its question (accordion). JS: [data-faq] in script.js -->
-        <div class="container faq__board" data-reveal>
-
-            <div class="faq__intro">
-                <span class="sub-heading">FAQs</span>
-                <h2 class="section-heading">Questions, answered</h2>
-                <p class="para">The things students ask us most before they book a training in Ubud.</p>
-            </div>
-
-            <div class="faq__panel" aria-hidden="true">
-                <figure class="arch-img faq__photo"><img src="<?=$link?>assets/images/home/img.webp" alt="" width="600" height="800" loading="lazy"></figure>
-            </div>
-
-            <?php foreach ($faqs as $i => $faq): $num = sprintf('%02d', $i + 1); ?>
-            <div class="faq-item<?= $i === 0 ? ' is-active' : '' ?>">
-                <h3 class="faq-item__head">
-                    <button type="button" class="faq-item__q" id="faq-q-<?= $i ?>" aria-expanded="<?= $i === 0 ? 'true' : 'false' ?>" aria-controls="faq-a-<?= $i ?>" data-faq-q>
-                        <span class="faq-item__num"><?= $num ?></span>
-                        <span class="faq-item__text"><?= $e($faq['q']) ?></span>
-                        <svg class="faq-item__arrow" viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5h21M17 1l4 4-4 4"/></svg>
-                    </button>
-                </h3>
-                <div class="faq-item__a" id="faq-a-<?= $i ?>" role="region" aria-labelledby="faq-q-<?= $i ?>">
-                    <div class="faq-item__inner">
-                        <span class="faq-item__count" aria-hidden="true"><?= $num ?> <em>/ <?= sprintf('%02d', count($faqs)) ?></em></span>
-                        <p class="faq-item__title" aria-hidden="true"><?= $e($faq['q']) ?></p>
-                        <p class="faq-item__answer"><?= $e($faq['a']) ?></p>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
-
-            <div class="faq__help">
-                <span class="faq__help-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>
-                </span>
-                <div>
-                    <p class="faq__help-title">Still have a question?</p>
-                    <a href="#contact" class="link-line">Ask us directly <svg viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5h21M17 1l4 4-4 4"/></svg></a>
-                </div>
-            </div>
-        </div>
-
-        <script type="application/ld+json"><?= json_encode($faq_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
-    </section>
+    <!-- FAQ — shared component include/faq.php: full-height photo left (45%) · accordion right (white) -->
+    <?php
+    $faq_list  = $faqs;
+    $faq_title = 'Questions, answered';
+    $faq_text  = 'The things students ask us most before they book a training in Ubud.';
+    $faq_img   = ['src' => 'home/faqs-img.webp', 'w' => 995, 'h' => 1337, 'alt' => 'Student practising alternate-nostril breathing (pranayama) on a bolster and block in the shala'];
+    include 'include/faq.php';
+    ?>
 
     <!-- Contact — form card overlapping a map · contact strip below (section-bg) -->
     <?php

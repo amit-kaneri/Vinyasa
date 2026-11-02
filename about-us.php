@@ -43,19 +43,6 @@
         ],
     ];
 
-    // Yoga Alliance levels — wording per verified-facts.md (Yoga Alliance registers; graduates are "eligible to apply")
-    $rys_levels = [
-        ['num' => '200', 'title' => 'Foundation',    'text' => 'The 200-hour teacher training. Open to beginners, no prior yoga experience needed.',            'ryt' => 'Eligible to apply for RYT 200'],
-        ['num' => '300', 'title' => 'Advanced',      'text' => 'The 300-hour training for teachers who already hold a 200-hour certificate.',                 'ryt' => 'With a 200-hour: eligible to apply for RYT 500'],
-        ['num' => '500', 'title' => 'Complete path', 'text' => 'The full 500-hour training in Rishikesh. No prior certificate needed; students must be 18+.', 'ryt' => 'Eligible to apply for RYT 500'],
-    ];
-
-    $about_ratings = [
-        ['name' => 'Google',        'score' => '4.8', 'reviews' => '200+ reviews'],
-        ['name' => 'TripAdvisor',   'score' => '4.9', 'reviews' => '36 reviews'],
-        ['name' => 'Yoga Alliance', 'score' => '4.4', 'reviews' => '78+ reviews'],
-    ];
-
     $breadcrumb_schema = [
         '@context'        => 'https://schema.org',
         '@type'           => 'BreadcrumbList',
@@ -206,45 +193,8 @@
         </div>
     </section>
 
-    <!-- Registration + ratings (white) -->
-    <!-- v2 (user): centred head · 3 RYS levels in columns · one ratings line -->
-    <section class="trust spacing">
-        <div class="container">
-            <div class="trust__head" data-reveal>
-                <span class="sub-heading">Registration</span>
-                <h2 class="section-heading">Registered with Yoga Alliance</h2>
-                <p class="para">Vinyasa Yoga Academy is a Yoga Alliance USA registered school at three levels. Yoga Alliance registers schools and teachers. After a course you are eligible to apply for the matching RYT designation, under Yoga Alliance's own requirements.</p>
-            </div>
-
-            <ul class="trust__levels" data-reveal>
-                <?php foreach ($rys_levels as $level): ?>
-                <li class="rys-level">
-                    <span class="rys-level__label">RYS</span>
-                    <strong class="rys-level__num"><?= $e($level['num']) ?></strong>
-                    <h3 class="rys-level__title"><?= $e($level['title']) ?></h3>
-                    <p class="rys-level__text"><?= $e($level['text']) ?></p>
-                    <span class="rys-level__ryt"><?= $e($level['ryt']) ?></span>
-                </li>
-                <?php endforeach; ?>
-            </ul>
-
-            <div class="trust__foot" data-reveal>
-                <ul class="trust__ratings">
-                    <?php foreach ($about_ratings as $rating): ?>
-                    <li>
-                        <span class="trust__star" aria-hidden="true"><?= icon('star') ?></span>
-                        <strong><?= $e($rating['score']) ?></strong>
-                        <span><?= $e($rating['name']) ?> <small>(<?= $e($rating['reviews']) ?>)</small></span>
-                    </li>
-                    <?php endforeach; ?>
-                </ul>
-                <a href="<?= $e($social['yoga-alliance']['url']) ?>" class="link-line" target="_blank" rel="noopener">View our Yoga Alliance profile <?= $arrow ?></a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Closing CTA (section-bg) -->
-    <section class="about-cta section-bg spacing">
+    <!-- Closing CTA (white) -->
+    <section class="about-cta spacing">
         <div class="container about-cta__inner" data-reveal>
             <span class="accent-text">Begin your journey</span>
             <h2 class="section-heading">Find the course that fits you</h2>

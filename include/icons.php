@@ -72,6 +72,63 @@ function icon(string $name): string
          . $paths[$name] . '</svg>';
 }
 
+/* ---- Feature icons (detailed duotone, 48×48) ----
+   Bigger illustrated icons for feature lists (Why Us). Lines = currentColor; colours of the
+   classes come from the section's SCSS: .ft = soft tone fill · .fa = accent line · .fd = accent fill · .fw = background fill.
+   Usage: <?php echo feature_icon('lotus'); ?> */
+
+function feature_icon(string $name): string
+{
+    $paths = [
+        // rosette medal with ribbons and star — registered school
+        'badge'       => '<path class="ft" d="M18 29l-4 14 6-2.5 3.5 4.5 3-13z"/><path class="ft" d="M30 29l4 14-6-2.5-3.5 4.5-3-13z"/>'
+                       . '<circle class="fw" cx="24" cy="19" r="12"/><circle class="fa" cx="24" cy="19" r="9" stroke-dasharray="1.6 2.2"/>'
+                       . '<path class="fd" d="M24 14.5l1.12 2.96 3.16.15-2.47 1.98.84 3.05L24 20.9l-2.65 1.74.84-3.05-2.47-1.98 3.16-.15z"/>',
+        // Himalaya peaks with snow, sun and the Ganges — Rishikesh roots
+        'mountain'    => '<circle class="fd" cx="35" cy="11" r="3.5"/>'
+                       . '<path class="ft" d="M4 34 16 14l7 10 5-6 16 16z"/><path class="fa" d="M12.7 19.5 16 14l3.4 4.9-1.9 1.6-1.5-1.5-1.6 1.6z"/>'
+                       . '<path d="M4 38c3 0 3-1.5 6-1.5s3 1.5 6 1.5 3-1.5 6-1.5 3 1.5 6 1.5 3-1.5 6-1.5 3 1.5 6 1.5"/>'
+                       . '<path class="fa" d="M10 42.5c2.5 0 2.5-1.2 5-1.2s2.5 1.2 5 1.2 2.5-1.2 5-1.2 2.5 1.2 5 1.2 2.5-1.2 5-1.2"/>',
+        // Balinese pavilion with tiered roof and a seated yogi — shala
+        'shala'       => '<path class="fa" d="M24 4v4"/><circle class="fd" cx="24" cy="3.5" r="1.2"/>'
+                       . '<path class="ft" d="M24 8c-3 4-7 7-12 8.5h24C31 15 27 12 24 8z"/><path class="ft" d="M12 16.5h24c2 2.5 4.5 4 8 5H4c3.5-1 6-2.5 8-5z"/>'
+                       . '<path d="M8 21.5v2h32v-2M10 23.5V38M38 23.5V38M17 23.5V38M31 23.5V38"/>'
+                       . '<circle class="fd" cx="24" cy="28.5" r="1.6"/><path class="fa" d="M21 36c0-2.5 1.3-4.5 3-4.5s3 2 3 4.5M19.5 36.3h9"/>'
+                       . '<path class="ft" d="M6 38h36v3H6z"/><path d="M3 44h42"/>',
+        // five-petal lotus on water — styles of yoga
+        'lotus'       => '<circle class="fd" cx="24" cy="5.5" r="1"/><circle class="fd" cx="12" cy="11" r=".8"/><circle class="fd" cx="36" cy="11" r=".8"/>'
+                       . '<path class="ft" d="M22 30.5C15 31 8 27 5 21c6-.5 12 3 17 9.5z"/><path class="ft" d="M26 30.5C33 31 40 27 43 21c-6-.5-12 3-17 9.5z"/>'
+                       . '<path class="fw" d="M24 30c-5-1-9.5-6-10-13 5 1.5 8.5 6 10 13z"/><path class="fw" d="M24 30c5-1 9.5-6 10-13-5 1.5-8.5 6-10 13z"/>'
+                       . '<path class="ft" d="M24 10c-3.5 4-3.5 14 0 20 3.5-6 3.5-16 0-20z"/>'
+                       . '<path d="M8 36c5 2.5 27 2.5 32 0"/><path class="fa" d="M13 41c4 1.5 18 1.5 22 0"/>',
+        // seedling with two leaves and sparkles — open to beginners
+        'sprout'      => '<path class="fa" d="M39 25v4M37 27h4M10 30v3M8.5 31.5h3"/>'
+                       . '<path class="ft" d="M24 28c-1-6-6-10-13-10 0 6.5 5 10.5 13 10z"/><path class="fa" d="M14 20.5c3.5 2 7 4.5 10 7.5"/>'
+                       . '<path class="ft" d="M24 23c.5-6 5-10 12-10.5 0 6.5-4.5 10.5-12 10.5z"/><path class="fa" d="M34.5 14c-3.5 2.5-7.5 5.5-10.5 9"/>'
+                       . '<path d="M24 40V20"/><path class="ft" d="M9 40c4-4 26-4 30 0z"/><path d="M6 40h36"/>',
+        // bed with arched headboard, pillows and blanket — rooms
+        'bed'         => '<path class="ft" d="M9 27V14c0-3 2-5 5-5h20c3 0 5 2 5 5v13z"/><path class="fd" d="M24 11.3l1.6 1.6-1.6 1.6-1.6-1.6z"/>'
+                       . '<rect class="fw" x="13" y="18" width="9.5" height="5.5" rx="2.75"/><rect class="fw" x="25.5" y="18" width="9.5" height="5.5" rx="2.75"/>'
+                       . '<rect class="fw" x="5" y="27" width="38" height="9" rx="2"/><path class="fa" d="M5 31h38"/><path d="M9 36v4M39 36v4"/>',
+        // globe with a location pin — students from many countries
+        'globe'       => '<circle class="ft" cx="23" cy="25" r="14"/><path d="M9 25h28M11 18h24M11 32h24"/>'
+                       . '<path d="M23 11c-4.5 4-6.5 9-6.5 14s2 10 6.5 14c4.5-4 6.5-9 6.5-14s-2-10-6.5-14z"/>'
+                       . '<path class="fd" d="M37 4.5a4.5 4.5 0 0 0-4.5 4.5c0 3.4 4.5 7.5 4.5 7.5s4.5-4.1 4.5-7.5A4.5 4.5 0 0 0 37 4.5z"/><circle class="fw" cx="37" cy="9" r="1.5"/>'
+                       . '<circle class="fd" cx="6" cy="9" r=".9"/><circle class="fd" cx="42" cy="38" r=".9"/>',
+        // certificate with a sealed ribbon — certification you earn
+        'certificate' => '<rect class="ft" x="6" y="8" width="36" height="25" rx="1.5"/><path d="M12 14h24M12 18.5h16M12 23h10"/>'
+                       . '<path class="fa" d="M30.5 36 29 43.5l3-1.6 1 2.1M35.5 36 37 43.5l-3-1.6-1 2.1"/>'
+                       . '<circle class="fw" cx="33" cy="31" r="5.5"/><path class="fa" d="M30.7 31.1l1.6 1.6 3-3.1"/>',
+    ];
+
+    if (!isset($paths[$name])) {
+        return '';
+    }
+
+    return '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+         . $paths[$name] . '</svg>';
+}
+
 /* ---- Review platform logos ----
    Simplified marks in each platform's own brand colours (logo exception to the palette rule).
    Usage: <?php echo brand_icon('google'); ?> */

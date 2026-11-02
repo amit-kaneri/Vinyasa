@@ -38,8 +38,8 @@ $seo = [
         'crumb'       => 'About Us',
     ],
     '200-hour-yoga-teacher-training-in-bali.php' => [
-        'title'       => '200 Hour Yoga Teacher Training in Bali | Ubud, 20 Days',
-        'description' => '20-day residential 200-hour yoga teacher training in Ubud, Bali. Open to beginners, monthly batches, from $1,299 with room and meals. Eligible to apply for RYT 200.',
+        'title'       => '200 Hour Yoga Teacher Training in Bali | Ubud, 15 Days',
+        'description' => '15-day residential 200-hour yoga teacher training in Ubud, Bali. Open to beginners, monthly batches, from $1,699 with room and meals. Eligible to apply for RYT 200.',
         'crumb'       => '200 Hour YTT in Bali',
     ],
     'yoga-retreat-in-bali.php' => [

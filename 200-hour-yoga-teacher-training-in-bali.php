@@ -19,7 +19,7 @@
     $book_url = $link . '#contact'; // TODO: booking / enquiry page
 
     $facts = [
-        ['icon' => 'calendar', 'label' => 'Duration',    'value' => '20 days'],
+        ['icon' => 'calendar', 'label' => 'Duration',    'value' => '15 days'],
         ['icon' => 'clock',    'label' => 'Training',    'value' => '200 hours'],
         ['icon' => 'sprout',   'label' => 'Level',       'value' => 'Beginners welcome'],
         ['icon' => 'users',    'label' => 'Group size',  'value' => '15–20 students'],
@@ -28,12 +28,12 @@
     ];
 
     // Overview photo row — middle one is the tallest (wave). TODO: replace with dedicated 200hr Bali photos
-    $overview_photos = [
-        ['img' => 'assets/images/overview-img-2.webp',   'w' => 600, 'h' => 1066, 'alt' => 'Yoga class in the open-air shala in Ubud'],
-        ['img' => 'assets/images/yoga-retreat-img.webp', 'w' => 600, 'h' => 1066, 'alt' => 'Students practising together in the shala'],
-        ['img' => 'assets/images/200-hour-ttc.webp',     'w' => 600, 'h' => 1066, 'alt' => 'Graduates in white holding their certificates beside rice fields in Ubud'],
-        ['img' => 'assets/images/overview-img-1.webp',   'w' => 600, 'h' => 800,  'alt' => 'Morning practice in the Ubud shala'],
-        ['img' => 'assets/images/why-dining.webp',       'w' => 600, 'h' => 1066, 'alt' => 'Students sharing a meal in the open-air dining pavilion'],
+    $overview_photos = [ // user's course photos (assets/images/course/), centre = the biggest, highest one
+        ['img' => 'assets/images/course/img-3.webp', 'w' => 600, 'h' => 900, 'alt' => 'Student sitting cross-legged on a bolster, listening during a class'],
+        ['img' => 'assets/images/course/1-321.webp', 'w' => 600, 'h' => 900, 'alt' => 'Teacher giving a student a hands-on adjustment in a supine stretch'],
+        ['img' => 'assets/images/course/img-1.webp', 'w' => 600, 'h' => 900, 'alt' => 'Student hanging upside down in an aerial yoga hammock beside a stone Buddha'],
+        ['img' => 'assets/images/course/img-2.webp', 'w' => 600, 'h' => 900, 'alt' => 'Student meditating cross-legged with hands in prayer position'],
+        ['img' => 'assets/images/course/img-4.webp', 'w' => 600, 'h' => 800, 'alt' => 'Carved stone Ganesha relief at the Ubud campus'],
     ];
 
     // Curriculum grouped in 3 pillars. Each subject opens a popup (detail + key topics) — content from the live course page.
@@ -121,44 +121,14 @@
         ['time' => '22:00', 'end' => '05:00', 'session' => 'Lights Off & Rest',      'short' => 'Rest',       'icon' => 'moon'],
     ];
 
-    // Top-down room drawing for the fee cards: gold room outline + one bed per person (pillow at the wall side).
-    // Layouts per room size: [x, y, width, height, pillow at top?]
-    $room_svg = function (int $beds): string {
-        $layouts = [
-            1 => [[27, 9, 26, 30, true]],                                    // private room: one bed
-            2 => [[16, 14, 18, 30, true], [46, 14, 18, 30, true]],
-            4 => [[20, 9, 15, 17, true], [45, 9, 15, 17, true], [20, 28, 15, 17, false], [45, 28, 15, 17, false]],
-            6 => [[10, 9, 14, 17, true], [33, 9, 14, 17, true], [56, 9, 14, 17, true],
-                  [10, 28, 14, 17, false], [33, 28, 14, 17, false], [56, 28, 14, 17, false]],
-        ];
-        $svg = '<svg viewBox="0 0 80 56" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true">'
-             . '<path d="M42 53H77V3H3v50h31"/>'                                   // walls, gap at the bottom = door
-             . '<path d="M34 53a8 8 0 0 1 8-8" stroke-dasharray="1.5 2"/>';          // door swing
-        foreach ($layouts[$beds] ?? [] as [$x, $y, $w, $h, $top]) {
-            $py = $top ? $y + 2 : $y + $h - 6;                                       // pillow near the wall
-            $svg .= sprintf('<rect class="bed" x="%s" y="%s" width="%s" height="%s" rx="2"/>', $x, $y, $w, $h)
-                  . sprintf('<rect class="pillow" x="%s" y="%s" width="%s" height="4" rx="1.2"/>', $x + 2, $py, $w - 4);
-        }
-        return $svg . '</svg>';
-    };
-
-    // TODO: real room photos — save as assets/images/rooms/6-sharing.webp, 4-sharing.webp, 2-sharing.webp, private.webp
-    // and update img/w/h. Until then these are campus placeholders.
-    $fees = [
-        ['room' => '6-Sharing', 'note' => 'Female only',   'beds' => 6, 'price' => '1,299', 'img' => 'assets/images/about-us/back-view.webp', 'w' => 1000, 'h' => 750],
-        ['room' => '4-Sharing', 'note' => 'Female only',   'beds' => 4, 'price' => '1,399', 'img' => 'assets/images/about-us/img-2.webp',     'w' => 1000, 'h' => 667],
-        ['room' => '2-Sharing', 'note' => 'Shared room',   'beds' => 2, 'price' => '1,699', 'img' => 'assets/images/about-us/image-3.webp',   'w' => 1000, 'h' => 689],
-        ['room' => 'Private',   'note' => 'Your own room', 'beds' => 1, 'price' => '2,299', 'img' => 'assets/images/about-us/img-4.webp',     'w' => 1000, 'h' => 551],
-    ];
-
-    // Monthly batches from the 1st to the 20th
+    // Monthly batches from the 1st to the 15th
     $batches = [
-        ['start' => '01 Nov', 'end' => '20 Nov', 'year' => '2026'],
-        ['start' => '01 Dec', 'end' => '20 Dec', 'year' => '2026'],
-        ['start' => '01 Jan', 'end' => '20 Jan', 'year' => '2027'],
-        ['start' => '01 Feb', 'end' => '20 Feb', 'year' => '2027'],
-        ['start' => '01 Mar', 'end' => '20 Mar', 'year' => '2027'],
-        ['start' => '01 Apr', 'end' => '20 Apr', 'year' => '2027'],
+        ['start' => '01 Nov', 'end' => '15 Nov', 'year' => '2026'],
+        ['start' => '01 Dec', 'end' => '15 Dec', 'year' => '2026'],
+        ['start' => '01 Jan', 'end' => '15 Jan', 'year' => '2027'],
+        ['start' => '01 Feb', 'end' => '15 Feb', 'year' => '2027'],
+        ['start' => '01 Mar', 'end' => '15 Mar', 'year' => '2027'],
+        ['start' => '01 Apr', 'end' => '15 Apr', 'year' => '2027'],
     ];
 
     $included = [
@@ -188,7 +158,7 @@
 
     $course_faqs = [
         ['q' => 'Do I need yoga experience to join?',       'a' => 'No. The course is open to complete beginners. You need to be 18 or older, and a regular practice before you arrive will make the first week easier.'],
-        ['q' => 'How long is the course and when does it start?', 'a' => 'The training runs for 20 days and 200 hours. A new batch starts on the 1st of every month and ends on the 20th.'],
+        ['q' => 'How long is the course and when does it start?', 'a' => 'The training runs for 15 days and 200 hours. A new batch starts on the 1st of every month and ends on the 15th.'],
         ['q' => 'Which styles of yoga will I learn?',        'a' => 'The main styles are Hatha, Ashtanga and Vinyasa, with elements of Yin, Restorative yoga and Yoga Nidra.'],
         ['q' => 'How many students are in a group?',         'a' => 'Groups are 15 to 20 students. All sessions are taught in simple, clear English.'],
         ['q' => 'What certificate will I receive?',          'a' => 'After a practical asana test and full attendance, you receive the VYA 200-hour completion certificate. You are then eligible to apply for the RYT 200 designation with Yoga Alliance.'],
@@ -201,14 +171,9 @@
         '@context'    => 'https://schema.org',
         '@type'       => 'Course',
         'name'        => '200 Hour Yoga Teacher Training in Bali',
-        'description' => 'A 20-day residential 200-hour yoga teacher training in Ubud, Bali, open to beginners. Graduates are eligible to apply for RYT 200 with Yoga Alliance.',
+        'description' => 'A 15-day residential 200-hour yoga teacher training in Ubud, Bali, open to beginners. Graduates are eligible to apply for RYT 200 with Yoga Alliance.',
         'provider'    => ['@type' => 'Organization', 'name' => $site_name, 'sameAs' => $link],
-        'offers'      => ['@type' => 'Offer', 'category' => 'Paid', 'price' => '1299', 'priceCurrency' => 'USD'],
-    ];
-    $faq_schema = [
-        '@context'   => 'https://schema.org',
-        '@type'      => 'FAQPage',
-        'mainEntity' => array_map(fn ($f) => ['@type' => 'Question', 'name' => $f['q'], 'acceptedAnswer' => ['@type' => 'Answer', 'text' => $f['a']]], $course_faqs),
+        'offers'      => ['@type' => 'Offer', 'category' => 'Paid', 'price' => '1699', 'priceCurrency' => 'USD'],
     ];
     $breadcrumb_schema = [
         '@context'        => 'https://schema.org',
@@ -224,7 +189,7 @@
     <!-- Page hero — only breadcrumb + h1 on the photo (.page-hero--overlay, user). TODO: course-specific banner photo -->
     <section class="page-hero page-hero--overlay page-hero--course">
         <div class="page-hero__bg">
-            <img src="<?=$link?>assets/images/about-us/banner-img.webp" alt="Yoga teacher training students standing arm in arm in the Ubud shala" width="1920" height="1280" fetchpriority="high">
+            <img src="<?=$link?>assets/images/course/banner-img.webp" alt="Yoga teacher training students meditating together in a circle in the Ubud shala" width="1916" height="1162" fetchpriority="high">
 
             <div class="container page-hero__overlay">
                 <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -238,8 +203,8 @@
             </div>
         </div>
 
-        <div class="container">
-            <!-- Quick facts — one strip under the photo -->
+        <!-- Quick facts — frosted bar on the bottom of the photo (≥992), strip under the photo on mobile -->
+        <div class="container course-facts-bar">
             <ul class="course-facts">
                 <?php foreach ($facts as $fact): ?>
                 <li>
@@ -261,11 +226,11 @@
             <div class="course-overview__content" data-reveal>
                 <span class="sub-heading">Course Overview</span>
                 <h2 class="section-heading">Your first step as a yoga teacher</h2>
-                <p class="para">This 200-hour course is a full, residential foundation in yoga. You live on campus in Ubud for 20 days and follow a set daily schedule, from morning sadhana to evening Hatha practice.</p>
+                <p class="para">This 200-hour course is a full, residential foundation in yoga. You live on campus in Ubud for 15 days and follow a set daily schedule, from morning sadhana to evening Hatha practice.</p>
                 <p class="para">The main styles are Hatha, Ashtanga and Vinyasa, with elements of Yin, Restorative yoga and Yoga Nidra. Alongside asana you study pranayama, meditation, philosophy, anatomy and teaching methodology, and you practise teaching every day.</p>
                 <ul class="course-overview__points">
                     <li><?= icon('check') ?> Open to beginners, age 18+</li>
-                    <li><?= icon('check') ?> Monthly batches, 1st to 20th</li>
+                    <li><?= icon('check') ?> Monthly batches, 1st to 15th</li>
                     <li><?= icon('check') ?> Taught in simple, clear English</li>
                     <li><?= icon('check') ?> Eligible to apply for RYT 200</li>
                 </ul>
@@ -297,9 +262,17 @@
             </div>
 
             <!-- Each subject is a button → opens its popup (<dialog>). JS: [data-modal-open] in script.js -->
-            <div class="pillars" data-reveal>
-                <?php $n = 0; foreach ($curriculum as $group): ?>
-                <article class="pillar-col">
+            <!-- <992: the 3 pillars become tabs (one list at a time — user: section was far too long on phones). JS: [data-pillars] -->
+            <div class="pillars" data-pillars data-reveal>
+                <div class="pillars__tabs" role="tablist" aria-label="Curriculum areas">
+                    <?php foreach ($curriculum as $g => $group): ?>
+                    <button type="button" class="pillars__tab<?= $g === 0 ? ' is-active' : '' ?>" role="tab" aria-selected="<?= $g === 0 ? 'true' : 'false' ?>" data-pillar-tab>
+                        <span aria-hidden="true"><?= icon($group['icon']) ?></span><?= $e($group['title']) ?>
+                    </button>
+                    <?php endforeach; ?>
+                </div>
+                <?php $n = 0; foreach ($curriculum as $g => $group): ?>
+                <article class="pillar-col<?= $g === 0 ? ' is-active' : '' ?>" data-pillar>
                     <span class="pillar-col__icon" aria-hidden="true"><?= icon($group['icon']) ?></span>
                     <h3 class="pillar-col__title"><?= $e($group['title']) ?></h3>
                     <p class="pillar-col__intro"><?= $e($group['intro']) ?></p>
@@ -337,12 +310,30 @@
         </div>
     </section>
 
-    <!-- Daily schedule (v4, "watch") — one round watch in the centre; the 14 schedule entries are written around the dial like hour
-         markers. The active entry glows and the gold hand points to it; the centre shows it in full (section-bg). JS: [data-clock] -->
+    <!-- Highlights (user: below the curriculum) — shared include/highlights.php -->
+    <?php include 'include/highlights.php'; ?>
+
+    <!-- Accommodation — shared include/accommodation.php (room tabs · photo slider · details) -->
+    <?php include 'include/accommodation.php'; ?>
+
+    <!-- Daily schedule (v5.1, "day timeline as a table", user) — one sticky arch photo left + right (≥1200) ·
+         centre: table-style timeline (Time · Session · Duration), Morning / Afternoon / Evening group rows, hairline rows, a vertical
+         line through gold diamond markers. While scrolling the line fills gold and reached rows light up (JS: [data-day-line]).
+         The v4 watch's .watch SCSS and [data-clock] JS are kept (unused) for an easy revert. -->
     <?php
-    $slots = count($schedule);
-    // point on a circle around the watch centre (300, 300); 0° = top, clockwise
-    $pt = fn(float $deg, float $r) => [round(300 + $r * sin(deg2rad($deg)), 2), round(300 - $r * cos(deg2rad($deg)), 2)];
+    $day_part = fn (string $time) => (int) $time < 12 ? 'Morning' : ((int) $time < 18 ? 'Afternoon' : 'Evening');
+    // "40 min" / "1 h" / "1 h 30" — end may be after midnight (rest 22:00 → 05:00)
+    $duration = function (string $from, string $to): string {
+        [$fh, $fm] = array_map('intval', explode(':', $from));
+        [$th, $tm] = array_map('intval', explode(':', $to));
+        $min = (($th * 60 + $tm) - ($fh * 60 + $fm) + 1440) % 1440;
+        return $min < 60 ? $min . ' min' : intdiv($min, 60) . ' h' . ($min % 60 ? ' ' . $min % 60 : '');
+    };
+    // one arch photo each side (user: only 2 photos, shown properly) — morning circle left, study session right
+    $schedule_photos = [
+        'left'  => ['assets/images/overview-img-2.webp', 600, 1066, 'Morning circle in the open-air shala', 'Morning circle'],
+        'right' => ['assets/images/overview-img-1.webp', 600, 800, 'Students studying on cushions in the shala above the jungle', 'Afternoon study'],
+    ];
     ?>
     <section class="schedule section-bg spacing">
         <div class="container">
@@ -352,150 +343,85 @@
                 <p class="para">Days start early and follow a steady rhythm of practice, study and rest. Timings may change slightly with the season and weather.</p>
             </div>
 
-            <!-- Stage (≥1200px): tilted photo collage left · watch · tilted photo collage right (photos lean in towards the watch) -->
-            <?php
-            $collage = [
-                'left'  => [
-                    ['assets/images/overview-img-2.webp', 600, 1066], ['assets/images/200-hour-ttc.webp', 600, 1066],
-                    ['assets/images/yoga-retreat-img.webp', 600, 1066], ['assets/images/why-dining.webp', 600, 1066],
-                ],
-                'right' => [
-                    ['assets/images/overview-img-1.webp', 600, 800], ['assets/images/about-us/img-1.webp', 600, 900],
-                    ['assets/images/testimonials-img.webp', 800, 1422], ['assets/images/300-hour-ttc.webp', 800, 450],
-                ],
-            ];
-            ?>
             <div class="schedule__stage">
-                <div class="schedule__collage schedule__collage--left" aria-hidden="true">
-                    <?php foreach ($collage['left'] as [$src, $w, $h]): ?>
-                    <img src="<?=$link?><?= $src ?>" alt="" width="<?= $w ?>" height="<?= $h ?>" loading="lazy">
-                    <?php endforeach; ?>
+                <?php [$src, $w, $h, $alt, $cap] = $schedule_photos['left']; ?>
+                <figure class="schedule__photo schedule__photo--left">
+                    <span class="arch-img"><img src="<?=$link?><?= $src ?>" alt="<?= $e($alt) ?>" width="<?= $w ?>" height="<?= $h ?>" loading="lazy"></span>
+                    <figcaption><?= $e($cap) ?></figcaption>
+                </figure>
+
+                <div class="day-line" data-day-line data-reveal>
+                    <div class="day-line__head" aria-hidden="true">
+                        <span>Time</span><span>Session</span><span>Duration</span>
+                    </div>
+                    <ol class="day-line__list">
+                        <?php $part = ''; foreach ($schedule as $slot): $meal = !empty($slot['meal']);
+                            if ($day_part($slot['time']) !== $part): $part = $day_part($slot['time']); ?>
+                        <li class="day-line__group"><?= $part ?></li>
+                        <?php endif; ?>
+                        <li class="day-line__item<?= $meal ? ' day-line__item--meal' : '' ?>">
+                            <span class="day-line__time"><strong><?= $e($slot['time']) ?></strong> <span>to <?= $e($slot['end']) ?></span></span>
+                            <span class="day-line__dot" aria-hidden="true"></span>
+                            <span class="day-line__name"><?= $e($slot['session']) ?></span>
+                            <span class="day-line__len"><?= $duration($slot['time'], $slot['end']) ?></span>
+                        </li>
+                        <?php endforeach; ?>
+                    </ol>
                 </div>
 
-            <div class="watch" data-clock data-reveal>
-                <svg class="watch__svg" viewBox="0 0 600 600" role="group" aria-label="Daily schedule">
-                    <!-- crown + bezel + face -->
-                    <rect class="watch__crown" x="588" y="284" width="16" height="32" rx="4"/>
-                    <circle class="watch__bezel" cx="300" cy="300" r="292"/>
-                    <circle class="watch__face" cx="300" cy="300" r="266"/>
-                    <circle class="watch__ring" cx="300" cy="300" r="150"/>
-
-                    <!-- minute-style ticks: 5 per schedule entry, the entry's own tick is long and gold -->
-                    <?php for ($t = 0; $t < $slots * 5; $t++): $deg = $t * 360 / ($slots * 5); $major = $t % 5 === 0;
-                        [$x1, $y1] = $pt($deg, $major ? 240 : 248); [$x2, $y2] = $pt($deg, 256); ?>
-                    <line class="watch__tick<?= $major ? ' watch__tick--major' : '' ?>" x1="<?= $x1 ?>" y1="<?= $y1 ?>" x2="<?= $x2 ?>" y2="<?= $y2 ?>"/>
-                    <?php endfor; ?>
-
-                    <!-- the schedule, written around the dial -->
-                    <?php foreach ($schedule as $i => $slot): $deg = $i * 360 / $slots; [$lx, $ly] = $pt($deg, 200); [$dx, $dy] = $pt($deg, 256); ?>
-                    <g class="watch__entry<?= !empty($slot['meal']) ? ' watch__entry--meal' : '' ?>" tabindex="0" role="button"
-                       data-i="<?= $i ?>" data-deg="<?= round($deg, 3) ?>" data-time="<?= $e($slot['time']) ?>" data-end="<?= $e($slot['end']) ?>" data-session="<?= $e($slot['session']) ?>"
-                       aria-label="<?= $e($slot['time'] . ' ' . $slot['session']) ?>">
-                        <circle class="watch__glow" cx="<?= $dx ?>" cy="<?= $dy ?>" r="7"/>
-                        <circle class="watch__hit" cx="<?= $lx ?>" cy="<?= $ly ?>" r="34"/>
-                        <text class="watch__label" x="<?= $lx ?>" y="<?= $ly ?>">
-                            <tspan class="watch__time" x="<?= $lx ?>" dy="-4"><?= $e($slot['time']) ?></tspan>
-                            <tspan class="watch__name" x="<?= $lx ?>" dy="17"><?= $e($slot['short']) ?></tspan>
-                        </text>
-                        <g class="watch__icon-src"><?= icon($slot['icon']) ?></g>
-                    </g>
-                    <?php endforeach; ?>
-
-                    <!-- hand: short gold pointer between the inner ring and the labels (rotated by JS) -->
-                    <g class="watch__hand">
-                        <line x1="300" y1="152" x2="300" y2="138"/>
-                        <circle cx="300" cy="135" r="4"/>
-                    </g>
-                </svg>
-
-                <!-- centre readout -->
-                <div class="watch__center" aria-live="polite">
-                    <span class="watch__c-icon" aria-hidden="true"></span>
-                    <span class="watch__c-time"></span>
-                    <span class="watch__c-until"></span>
-                    <span class="watch__c-session"></span>
-                </div>
+                <?php [$src, $w, $h, $alt, $cap] = $schedule_photos['right']; ?>
+                <figure class="schedule__photo schedule__photo--right">
+                    <span class="arch-img"><img src="<?=$link?><?= $src ?>" alt="<?= $e($alt) ?>" width="<?= $w ?>" height="<?= $h ?>" loading="lazy"></span>
+                    <figcaption><?= $e($cap) ?></figcaption>
+                </figure>
             </div>
 
-                <div class="schedule__collage schedule__collage--right" aria-hidden="true">
-                    <?php foreach ($collage['right'] as [$src, $w, $h]): ?>
-                    <img src="<?=$link?><?= $src ?>" alt="" width="<?= $w ?>" height="<?= $h ?>" loading="lazy">
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
-            <ul class="schedule__notes" data-reveal>
-                <li><strong>Thursday</strong> Silence day</li>
-                <li><strong>Sunday</strong> Free day with excursions</li>
-                <li><strong>After 20:00</strong> Silence on campus</li>
-            </ul>
+            <!-- note under the table (user: "as a note", was 3 pills) -->
+            <aside class="schedule__note" data-reveal>
+                <span class="schedule__note-title">Please note</span>
+                <ul>
+                    <li><strong>Thursday</strong> <span>Silence day</span></li>
+                    <li><strong>Sunday</strong> <span>Free day with excursions</span></li>
+                    <li><strong>After 20:00</strong> <span>Silence on campus</span></li>
+                </ul>
+            </aside>
         </div>
     </section>
 
-    <!-- Fees + dates (white) -->
+    <!-- Dates (white) — room fees removed (user, 2026-11-02); only the upcoming batches -->
     <section class="fees spacing" id="fees">
         <div class="container">
             <div class="course-head" data-reveal>
-                <span class="sub-heading">Dates &amp; Fees</span>
-                <h2 class="section-heading">Choose your room and your month</h2>
-                <p class="para">All fees are in US dollars and include your room, three meals a day and course materials.</p>
-            </div>
-        </div>
-
-        <!-- Split (v4.1, user): left = 4 room cards (aligned to the container) · right = room photo panel, exactly as tall
-             as the cards, running to the screen edge; batches full width below. Hover / focus a card or click a tab → that room's photo (script.js [data-room-view]). -->
-        <div class="fees__split">
-            <div class="fees__main">
-            <ul class="fees__grid" data-reveal>
-                <?php foreach ($fees as $i => $fee): ?>
-                <li class="fee<?= $i === 0 ? ' is-active' : '' ?>" data-room-card>
-                    <span class="fee__room-plan" role="img" aria-label="Room plan: <?= (int) $fee['beds'] ?> <?= $fee['beds'] === 1 ? 'bed' : 'beds' ?>">
-                        <?= $room_svg((int) $fee['beds']) ?>
-                    </span>
-                    <h3 class="fee__room"><?= $e($fee['room']) ?></h3>
-                    <span class="fee__note"><?= $e($fee['note']) ?></span>
-                    <strong class="fee__price"><small>USD</small><?= $e($fee['price']) ?></strong>
-                    <span class="fee__per">20 days · room &amp; meals</span>
-                    <a href="<?= $e($book_url) ?>" class="theme-btn theme-btn--outline theme-btn--block fee__btn" aria-label="Book the <?= $e($fee['room']) ?> room">Book Now <?= $arrow ?></a>
-                </li>
-                <?php endforeach; ?>
-            </ul>
+                <span class="sub-heading">Upcoming Dates</span>
+                <h2 class="section-heading">Choose your month</h2>
+                <p class="para">A new batch starts on the 1st of every month and runs for 15 days. Ask us about later dates.</p>
             </div>
 
-            <aside class="room-view" data-room-view data-reveal aria-label="Room photos">
-                <div class="room-view__frame">
-                    <?php foreach ($fees as $i => $fee): ?>
-                    <figure class="room-view__photo<?= $i === 0 ? ' is-active' : '' ?>" data-room-photo>
-                        <img src="<?=$link?><?= $e($fee['img']) ?>" alt="<?= $e($fee['room']) ?> room at the Ubud campus" width="<?= $fee['w'] ?>" height="<?= $fee['h'] ?>" loading="lazy">
-                        <figcaption class="room-view__caption">
-                            <span class="room-view__count"><?= sprintf('%02d', $i + 1) ?> / <?= sprintf('%02d', count($fees)) ?></span>
-                            <strong class="room-view__name"><?= $e($fee['room']) ?></strong>
-                            <span class="room-view__meta"><?= $e($fee['note']) ?> · from USD <?= $e($fee['price']) ?></span>
-                        </figcaption>
-                    </figure>
-                    <?php endforeach; ?>
-                </div>
-                <div class="room-view__tabs" role="group" aria-label="Choose a room">
-                    <?php foreach ($fees as $i => $fee): ?>
-                    <button type="button" class="room-view__tab<?= $i === 0 ? ' is-active' : '' ?>" data-room-tab aria-pressed="<?= $i === 0 ? 'true' : 'false' ?>"><?= $e($fee['room']) ?></button>
-                    <?php endforeach; ?>
-                </div>
-            </aside>
-        </div>
-
-        <div class="container">
+            <!-- Upcoming batches (v2, user: "make it better") — calendar cards: a cream calendar page per batch with two gold binding rings,
+                 month + year, big date range, length, Book. First = "Next batch". compact (user): 2 · 3 (≥768) · 6 in one row (≥1200). -->
             <div class="batches" data-reveal>
-                <h3 class="batches__title">Upcoming batches</h3>
                 <ul class="batches__list">
-                    <?php foreach ($batches as $batch): ?>
-                    <li class="batch">
-                        <span class="batch__dates"><?= $e($batch['start']) ?> <em>—</em> <?= $e($batch['end']) ?></span>
-                        <span class="batch__year"><?= $e($batch['year']) ?></span>
-                        <a href="<?= $e($book_url) ?>" class="theme-btn theme-btn--outline theme-btn--sm" aria-label="Book the <?= $e($batch['start'] . ' ' . $batch['year']) ?> batch">Book <?= $arrow ?></a>
+                    <?php foreach ($batches as $i => $batch):
+                        $month = date('F', strtotime($batch['start'] . ' ' . $batch['year'])); // "01 Nov" + "2026" → November
+                    ?>
+                    <li class="batch-card<?= $i === 0 ? ' is-next' : '' ?>">
+                        <?php if ($i === 0): ?><span class="batch-card__flag">Next batch</span><?php endif; ?>
+                        <div class="batch-card__head">
+                            <span class="batch-card__month"><?= $e($month) ?></span>
+                            <span class="batch-card__year"><?= $e($batch['year']) ?></span>
+                        </div>
+                        <div class="batch-card__body">
+                            <p class="batch-card__dates">
+                                <strong><?= $e(substr($batch['start'], 0, 2)) ?></strong>
+                                <em>to</em>
+                                <strong><?= $e(substr($batch['end'], 0, 2)) ?></strong>
+                            </p>
+                            <span class="batch-card__meta">15 days · 200 hours</span>
+                            <a href="<?= $e($book_url) ?>" class="theme-btn theme-btn--outline theme-btn--sm theme-btn--block" aria-label="Book the <?= $e($month . ' ' . $batch['year']) ?> batch">Book <?= $arrow ?></a>
+                        </div>
                     </li>
                     <?php endforeach; ?>
                 </ul>
-                <p class="batches__note">A new batch starts on the 1st of every month. Ask us about later dates.</p>
             </div>
         </div>
     </section>
@@ -521,7 +447,7 @@
             <div class="course-head" data-reveal>
                 <span class="sub-heading">Your Fee</span>
                 <h2 class="section-heading">What is included</h2>
-                <p class="para">Everything you need for 20 days on campus is in one fee. A few travel costs are yours to plan.</p>
+                <p class="para">Everything you need for 15 days on campus is in one fee. A few travel costs are yours to plan.</p>
             </div>
 
             <div class="inclusions__grid">
@@ -543,8 +469,8 @@
                     <footer class="ticket__stub">
                         <dl class="ticket__meta">
                             <div><dt>Course</dt><dd>200 Hour YTT</dd></div>
-                            <div><dt>Duration</dt><dd>20 days</dd></div>
-                            <div><dt>From</dt><dd>USD 1,299</dd></div>
+                            <div><dt>Duration</dt><dd>15 days</dd></div>
+                            <div><dt>From</dt><dd>USD 1,699</dd></div>
                         </dl>
                         <?= $barcode() ?>
                     </footer>
@@ -599,7 +525,30 @@
         </div>
     </section>
 
-    <!-- Good to know — eligibility · certification · getting here (section-bg) -->
+    <!-- Good to know (v2, user: "make the UI better") — 3 white cards on the cream section: faded gold number, duotone icon in a gold ring,
+         gold kicker + title, points with gold check circles; hover lifts the card and draws a gold line along its bottom. -->
+    <?php
+    $know = [
+        ['icon' => 'sprout', 'kicker' => 'Eligibility', 'title' => 'Who can join', 'items' => [
+            'Age 18 and above',
+            'No previous yoga experience needed',
+            'Attendance at all classes is required',
+            'Vegetarian food only; no smoking or alcohol on campus',
+        ]],
+        ['icon' => 'certificate', 'kicker' => 'Assessment', 'title' => 'Certification', 'items' => [
+            'Practical asana test',
+            'Assessment of attendance and conduct',
+            'VYA 200-hour completion certificate',
+            'Eligible to apply for RYT 200 with Yoga Alliance',
+        ]],
+        ['icon' => 'globe', 'kicker' => 'Travel', 'title' => 'Getting here', 'items' => [
+            'Fly into Ngurah Rai Airport (DPS), Denpasar',
+            'About 1.5 hours by road to Ubud',
+            'Airport pickup at extra cost',
+            'Driest months: April to October',
+        ]],
+    ];
+    ?>
     <section class="good-to-know section-bg spacing">
         <div class="container">
             <div class="course-head" data-reveal>
@@ -608,86 +557,31 @@
             </div>
 
             <div class="good-to-know__grid" data-reveal>
+                <?php foreach ($know as $n => $card): ?>
                 <article class="know">
-                    <span class="know__icon" aria-hidden="true"><?= icon('sprout') ?></span>
-                    <h3 class="know__title">Who can join</h3>
-                    <ul>
-                        <li>Age 18 and above</li>
-                        <li>No previous yoga experience needed</li>
-                        <li>Attendance at all classes is required</li>
-                        <li>Vegetarian food only; no smoking or alcohol on campus</li>
+                    <span class="know__num" aria-hidden="true"><?= sprintf('%02d', $n + 1) ?></span>
+                    <span class="know__icon" aria-hidden="true"><?= feature_icon($card['icon']) ?></span>
+                    <span class="know__kicker"><?= $e($card['kicker']) ?></span>
+                    <h3 class="know__title"><?= $e($card['title']) ?></h3>
+                    <ul class="know__list">
+                        <?php foreach ($card['items'] as $item): ?>
+                        <li><span class="know__check" aria-hidden="true"><?= icon('check') ?></span><?= $e($item) ?></li>
+                        <?php endforeach; ?>
                     </ul>
                 </article>
-                <article class="know">
-                    <span class="know__icon" aria-hidden="true"><?= icon('badge') ?></span>
-                    <h3 class="know__title">Certification</h3>
-                    <ul>
-                        <li>Practical asana test</li>
-                        <li>Assessment of attendance and conduct</li>
-                        <li>VYA 200-hour completion certificate</li>
-                        <li>Eligible to apply for RYT 200 with Yoga Alliance</li>
-                    </ul>
-                </article>
-                <article class="know">
-                    <span class="know__icon" aria-hidden="true"><?= icon('plane') ?></span>
-                    <h3 class="know__title">Getting here</h3>
-                    <ul>
-                        <li>Fly into Ngurah Rai Airport (DPS), Denpasar</li>
-                        <li>About 1.5 hours by road to Ubud</li>
-                        <li>Airport pickup at extra cost</li>
-                        <li>Driest months: April to October</li>
-                    </ul>
-                </article>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
 
-    <!-- FAQ — same component as the home page (white) -->
-    <section class="faq spacing" id="faq" data-faq>
-        <div class="container faq__board" data-reveal>
-
-            <div class="faq__intro">
-                <span class="sub-heading">FAQs</span>
-                <h2 class="section-heading">Questions about this course</h2>
-                <p class="para">Short answers to what students ask before joining the 200-hour training in Bali.</p>
-            </div>
-
-            <div class="faq__panel" aria-hidden="true">
-                <figure class="arch-img faq__photo"><img src="<?=$link?>assets/images/overview-img-1.webp" alt="" width="600" height="800" loading="lazy"></figure>
-            </div>
-
-            <?php foreach ($course_faqs as $i => $faq): $num = sprintf('%02d', $i + 1); ?>
-            <div class="faq-item<?= $i === 0 ? ' is-active' : '' ?>">
-                <h3 class="faq-item__head">
-                    <button type="button" class="faq-item__q" id="faq-q-<?= $i ?>" aria-expanded="<?= $i === 0 ? 'true' : 'false' ?>" aria-controls="faq-a-<?= $i ?>" data-faq-q>
-                        <span class="faq-item__num"><?= $num ?></span>
-                        <span class="faq-item__text"><?= $e($faq['q']) ?></span>
-                        <svg class="faq-item__arrow" viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5h21M17 1l4 4-4 4"/></svg>
-                    </button>
-                </h3>
-                <div class="faq-item__a" id="faq-a-<?= $i ?>" role="region" aria-labelledby="faq-q-<?= $i ?>">
-                    <div class="faq-item__inner">
-                        <span class="faq-item__count" aria-hidden="true"><?= $num ?> <em>/ <?= sprintf('%02d', count($course_faqs)) ?></em></span>
-                        <p class="faq-item__title" aria-hidden="true"><?= $e($faq['q']) ?></p>
-                        <p class="faq-item__answer"><?= $e($faq['a']) ?></p>
-                    </div>
-                </div>
-            </div>
-            <?php endforeach; ?>
-
-            <div class="faq__help">
-                <span class="faq__help-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6"/><circle cx="12" cy="16.8" r=".6" fill="currentColor" stroke="none"/></svg>
-                </span>
-                <div>
-                    <p class="faq__help-title">Still have a question?</p>
-                    <a href="<?= $e($book_url) ?>" class="link-line">Ask us directly <?= $arrow ?></a>
-                </div>
-            </div>
-        </div>
-
-        <script type="application/ld+json"><?= json_encode($faq_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?></script>
-    </section>
+    <!-- FAQ — shared component include/faq.php: full-height photo left (45%) · accordion right (white) -->
+    <?php
+    $faq_list  = $course_faqs;
+    $faq_title = 'Questions about this course';
+    $faq_text  = 'Short answers to what students ask before joining the 200-hour training in Bali.';
+    $faq_img   = ['src' => 'course/faqs-img.webp', 'w' => 992, 'h' => 1336, 'alt' => 'Host carrying a tea tray down a stone stairway beside the pool, under a carved round emblem'];
+    include 'include/faq.php';
+    ?>
 
     <!-- Closing CTA (section-bg) — reuses .about-cta -->
     <section class="about-cta section-bg spacing">

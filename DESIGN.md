@@ -359,7 +359,12 @@ Didot "01 / 03" count · 1px progress line (Swiper progressbar, fills amber gold
   keys ← → Esc, backdrop click closes, Lenis stops while open, focus returns.
 - Data: `$gallery` PHP array (img, w, h, label, title, alt). Photos reused from other sections — add fresh campus shots.
 
-### FAQ (`.faq` + `.faq-item` — `index.php`, after Gallery, before Contact, `id="faq"`)
+### FAQ — shared `include/faq.php` on home, course + retreat (`.course-faq` + `.faq-acc`, 2026-11-02)
+- **CURRENT:** full-height photo flush with the left screen edge (45%, sticky, square corners, fixed height = screen − header) · right: sub-heading +
+  h2 + para + native `<details name="faq">` accordion (gold number · question · round + toggle → × filled royal blue). Section has no top padding
+  (no bottom padding ≥992) so the photo touches both edges. Everything below about v2 / v1 is history (removed).
+
+### FAQ (old, removed) (`.faq` + `.faq-item` — `index.php`, after Gallery, before Contact, `id="faq"`)
 **v2 — question list + answer panel** (user picked it over chips / 2-col cards; v1 was a sticky intro + `<details>` accordion).
 - **Section:** `.spacing`, **white**. One markup for both layouts (`[data-faq]`, JS in script.js).
 - **Desktop (≥992px):** board grid `5fr 7fr`, rows = `$faq-count + 2` (intro · questions · help).
@@ -439,7 +444,7 @@ Order / backgrounds: Page hero `.page-hero--overlay.page-hero--course` (**no car
 
 ### Popup (`.modal`) — reusable (style.scss section 23, JS in script.js)
 - Native `<dialog class="modal" id="…">` + `.modal__box`; open with `[data-modal-open="id"]`, close with `[data-modal-close]`, Esc or backdrop click.
-- Desktop (≥768): centred cream window, max 620px, thin gold inner frame, soft shadow, fade-up. Mobile: **bottom sheet** (full width, gold top line, slides up).
+- Centred cream window on every screen (user, 2026-11-02 — no bottom sheet on phones): max 620px / 86dvh, thin gold inner frame, soft shadow, fade-up. Phones: no backdrop blur (perf).
 - Backdrop = royal-blue-dark 55% + blur. Lenis stops + body `.modal-open` while open; focus returns to the button on close.
 - **Daily schedule (v4, user: "one round watch in the centre with the schedule written on it"):** `.watch` = SVG watch (viewBox 600, max 620px):
   gold crown · cream-dark bezel · white face · 70 ticks (gold long tick per entry) · dotted inner ring. The 14 entries are written **around the dial**
@@ -450,7 +455,9 @@ Order / backgrounds: Page hero `.page-hero--overlay.page-hero--course` (**no car
 - **Photo collages beside the watch (user, ≥1200px only):** `.schedule__stage` grid `1fr · watch (max 560) · 1fr`; each side a 2-column staggered
   collage (`.schedule__collage`, 4 photos, 3:4, 14px radius, even photos 44px lower) **tilted in towards the watch** (`rotateY(±22deg)` + slight
   rotateZ, perspective 1400px; eases to ±14° on hover). Decorative (`aria-hidden`, empty alt). Photos in `$collage` — replace with real campus shots.
-- **Fees layout v4 (user: cards left, room photos right, photos outside the container):** head centred in `.container`, then `.fees__split`
+- **Fees (CURRENT, 2026-11-02):** `#fees` = "Choose your month" + compact calendar batch tiles (`.batch-card`, 6 in a row ≥1200). Room fees removed. Course = 15 days. Everything below about v4 / v5 / v2 cards is history.
+- **Highlights (2026-11-02):** after Curriculum — cream-dark band, endless linear photo strip (4 in view), wave offsets, hover freeze; see CLAUDE.md log.
+- **Fees layout v4 (replaced):** head centred in `.container`, then `.fees__split`
   (≥1200: **equal halves** `1fr 1fr` so cards stay narrow and arches tall, `padding-left: $container-edge` = the container's content edge, so the left
   column lines up with the page and the right column runs to the screen edge). Left `.fees__main` = v2 room cards **2×2 only**. **Batches are full width
   below the split** (own `.container`). Right **`.room-view`**: frame `position: absolute; inset: 0` ≥1200 → **exactly as tall as the cards**,
