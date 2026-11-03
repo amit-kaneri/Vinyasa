@@ -17,7 +17,7 @@
        student/country counts and the Jl. Bisma address (rest of the site uses Jl. Raya Andong) — owner to confirm.
        Only the 5-day retreat has a published price; the others are "on request". */
     $arrow = '<svg viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5h21M17 1l4 4-4 4"/></svg>';
-    $book_url = $link . '#contact'; // TODO: booking / enquiry page
+    $book_url = $link . 'contact-us.php#contact'; // enquiry form on the contact page
 
     $durations = [
         ['days' => 3,  'title' => 'A genuine reset',  'text' => 'A short pause to slow down, breathe and practise.',                          'img' => 'assets/images/about-us/img-1.webp',   'price' => 'Ask us'],

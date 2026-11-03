@@ -16,7 +16,7 @@
        ⚠ Live page lists the Bali address as "No 77 A, Jl. Bisma" — the rest of this site uses "Jl. Raya Andong". Owner to confirm.
        ⚠ Re-check prices + dates before launch; never show seat counts (they change daily). */
     $arrow = '<svg viewBox="0 0 22 10" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M0 5h21M17 1l4 4-4 4"/></svg>';
-    $book_url = $link . '#contact'; // TODO: booking / enquiry page
+    $book_url = $link . 'contact-us.php#contact'; // enquiry form on the contact page
 
     $facts = [
         ['icon' => 'calendar', 'label' => 'Duration',    'value' => '15 days'],

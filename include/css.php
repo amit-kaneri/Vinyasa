@@ -47,6 +47,11 @@ $seo = [
         'description' => 'A relaxed yoga retreat in Ubud, Bali: daily yoga and meditation, vegetarian meals and guided trips to temples and rice terraces. Beginners welcome.',
         'crumb'       => 'Retreats',
     ],
+    'contact-us.php' => [
+        'title'       => 'Contact Us | Vinyasa Yoga Academy, Ubud, Bali',
+        'description' => 'Get in touch about yoga teacher training or a yoga retreat in Ubud, Bali. Call or WhatsApp +62 813 2881 810, email us, or send an enquiry form.',
+        'crumb'       => 'Contact',
+    ],
 ];
 
 $page_seo = $seo[basename($_SERVER['SCRIPT_NAME'])] ?? $seo['index.php'];

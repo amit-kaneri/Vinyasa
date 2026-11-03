@@ -201,7 +201,7 @@
             <p class="para">Compare our 200-hour and 300-hour trainings and retreats, or ask us anything before you book.</p>
             <div class="about-cta__actions">
                 <a href="<?=$link?>#courses" class="theme-btn">View Courses</a>
-                <a href="<?=$link?>#contact" class="theme-btn theme-btn--outline">Contact Us</a>
+                <a href="<?=$link?>contact-us.php" class="theme-btn theme-btn--outline">Contact Us</a>
             </div>
         </div>
     </section>

@@ -72,7 +72,7 @@ _Last updated: 2026-11-02_
 - Libraries (local): Bootstrap 5.3.8, Swiper 14.3.0, Lenis 1.3.27 — order bootstrap → swiper → lenis → own style/script.
 - **Pages built:** `index.php` (banner, welcome, courses, why us, achievements, testimonials, social, gallery, FAQ, contact) · `about-us.php` ·
   (course page order: hero + facts bar · overview · curriculum · **highlights** · **accommodation** · daily schedule (timeline) · dates · inclusions · teachers · good to know · FAQ · CTA) ·
-  `200-hour-yoga-teacher-training-in-bali.php` (course template) · `yoga-retreat-in-bali.php`. Header + footer + floating back-to-top done.
+  `200-hour-yoga-teacher-training-in-bali.php` (course template) · `yoga-retreat-in-bali.php` · `contact-us.php`. Header + footer + floating back-to-top done.
 - `style.scss` has 24 sections (page loader section 8 still empty). Shared parts: `include/icons.php` (`icon()`, `feature_icon()`, `brand_icon()`),
   `include/social.php`, reusable `.theme-btn`, `.arch-img`, `.circle-btn`, `.slider-controls`, `.modal`, `.page-hero--overlay`, `data-reveal`.
 - **Rooms:** only **Private** (USD 2,299) and **Twin Sharing** (USD 1,699) — no 4/6-sharing. 200hr "from" price = **$1,699**.
@@ -84,7 +84,7 @@ _Last updated: 2026-11-02_
 
 1. Page loader (SVG lotus, amber-gold centre) — `style.scss` section 8 + markup + JS.
 2. Compress banner video (~2–3 MB) + add a `poster` image.
-3. Remaining pages: 300-hour course, Contact, legal pages (Privacy, Terms, Refund); wire up all `#` links.
+3. Remaining pages: 300-hour course, legal pages (Privacy, Terms, Refund); wire up the remaining `#` links (Our Teachers, Reviews, FAQ, 300hr).
 4. Real photos still needed: course banner, teachers (Yogi Yansa Ji, Yogi Shakti Ji), retreat postcards (temple / rice field / beach).
 5. Before launch: real reviews, social URLs, contact-form backend, favicon + OG images.
 
@@ -597,6 +597,20 @@ _Last updated: 2026-11-02_
   photo badge (gold "★ Recommended · Best value" / royal-blue + gold "★ Premium", `.room-panel__badge--premium`), info label
   ("Our recommendation · Best value" / "Premium choice · Ubud"), tab star (gold / royal-blue `.room-tab__star--premium`). Note: the Suite's
   first photo is the bathroom (acc-img-1) — rename files if a bedroom shot should lead.
+- **Contact page `contact-us.php`** (user): hero (`.page-hero--overlay`, `about-us/banner-img.webp` campus front, breadcrumb Home / Contact, h1
+  "Contact Us") · contact section (section-bg) · "Plan your trip / Getting to Ubud" (white, reuses `.good-to-know` / `.know` open columns:
+  Fly into Bali · Visa & season · When to arrive — facts already on the course/retreat pages). Contact section is now a **shared include
+  `include/contact.php`** (form + map + location card + strip; optional `$contact_bg` / `$contact_sub` / `$contact_title` / `$contact_text`);
+  home page includes it unchanged. `$seo['contact-us.php']` added. Links now go to the page: header nav Contact (active state), Enquire Now
+  (`contact-us.php#contact`), mobile "Contact Us" pill, footer Contact, About CTA, course + retreat `$book_url`. ⚠ Form still has no backend.
+- **Contact page v2** (user: "much better" + **details first, form LAST**): hero · `.reach` (section-bg) = one white panel with gold top edge
+  pulled up over the hero, 3 columns (WhatsApp highlighted with royal-blue disc + gold "Quickest reply" pill · Call · Email; label, big value,
+  line, action link) + "Follow our days in Ubud" ring icons · `.find-us` (white) = head + big rounded toned map with the address card (7fr) ·
+  "Getting to Ubud" list with feature icons (5fr) · `.enquire#contact` (section-bg, last) = sticky "What happens next" 01–03 (left) · white
+  form panel (right) with **course chips** (`.chips` / `.chip` radio pills, selected = royal blue), name, email, phone, preferred month,
+  message. The contact page no longer uses include/contact.php (home still does).
+  Reach panel → **2 columns** (user, ≥768): "Call or WhatsApp" (same number, highlighted, two links: Chat on WhatsApp · Call now) · Email.
+  `$channels[]['actions']` = list of links (`.reach__actions`).
 - **Highlights strip is now shared**: `include/highlights.php` (data + markup; optional `$hl_title` / `$hl_text` / `$hl_id`). Course page uses it
   unchanged; retreat page includes it after the postcards ("Life around the retreat").
 - Retreat **Included · Not included · What to bring in ONE section** (user): `.inclusions__grid--retreat` — both tickets side by side ≥992,
@@ -606,3 +620,22 @@ _Last updated: 2026-11-02_
   Not-included ticket got a "Good to know" note (`.ticket__extra`: airport pickup for a fee, ~1.5 h from DPS; visa on arrival 30 days).
   Retreat section order now: hero · intro (bg) · durations · rhythm (bg) · postcards · highlights (cream-dark) · rooms & food · included +
   packing (bg) · how to book · FAQ (bg) · CTA.
+
+### 2026-11-03
+- Cloudflare quick tunnel started (user): https://ultimately-introduce-opponent-guestbook.trycloudflare.com/luxury-vinyasa/ — verified 200 for
+  all 5 pages + CSS; htdocs root 403. Runs only while Claude's background process / the PC is on; URL changes on restart.
+- **Home Gallery now uses the user's `assets/images/gallery/` photos** (7 webp: tea pavilion, lobby, lotus emblem wall, sunrise pool, candle-lit
+  pool table, restaurant, cycling by the rice fields). Grid redone for 7 photos — desktop 4 cols × 6 rows: portrait · wide over 2 squares ·
+  portrait, then two wide photos side by side; mobile 2 cols: 2 portraits, wide, 2 squares, wide, wide. Labels/alt written from the photos.
+- Gallery lightbox: photo **title line removed** (user) — `.lightbox__title` markup, JS line and SCSS deleted; caption = gold label + "01 / 07" count.
+  `data-title` stays on the gallery buttons (used for the aria-label only).
+- **Home Social accounts row v2** (user: "make it better UI"): still open (no boxes), hairline top + bottom. ≥992 one row of 5 columns with
+  vertical hairlines — brand icon top-left, round ↗ arrow top-right, name + label below; tablet 2 columns (WhatsApp full width);
+  phones list rows (icon · name/label · arrow). Hover: brand line draws along the top edge, faint brand wash, icon lifts, arrow fills
+  with the brand colour. Markup: name + action now wrapped in `.social-card__text`.
+- **Contact page "reach" panel v3** (user: change the UI → then "more roundness + compact"): panel `border-radius` 20–28px with a gold top edge
+  that follows the corners (`&__panel::before`), tighter padding (24–36px) and smaller sizes (icon 42px, number 22–28px, email 18–22px, text 14px).
+  Each column: icon + label + (WhatsApp) "Quickest reply" status pill with a pulsing green dot in one row · value · text · `.theme-btn--sm` buttons
+  (Chat on WhatsApp filled, Call now / Write to us outline; full width on phones). Watermark icons removed (user).
+  WhatsApp column = soft cream wash. "Follow our days in Ubud" + ring icons moved INSIDE the panel as a footer strip (`li.reach__social`).
+  Buttons stay square (site-wide `.theme-btn`, no per-section button styling).

@@ -325,7 +325,6 @@ document.querySelectorAll('[data-gallery]').forEach((section) => {
 
     const img = box.querySelector('img');
     const label = box.querySelector('.lightbox__label');
-    const title = box.querySelector('.lightbox__title');
     const count = box.querySelector('.lightbox__count');
     let index = 0;
     let lastFocus = null;
@@ -337,7 +336,6 @@ document.querySelectorAll('[data-gallery]').forEach((section) => {
         img.src = thumb.currentSrc || thumb.src;
         img.alt = thumb.alt;
         label.textContent = item.dataset.label || '';
-        title.textContent = item.dataset.title || '';
         count.textContent = `${pad2(index + 1)} / ${pad2(items.length)}`;
     };
 

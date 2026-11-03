@@ -12,7 +12,7 @@ $footer_links = [
     ['label' => 'Our Teachers', 'url' => '#'],
     ['label' => 'Reviews',   'url' => '#'],
     ['label' => 'FAQ',       'url' => '#'],
-    ['label' => 'Contact',   'url' => '#'],
+    ['label' => 'Contact',   'url' => $link . 'contact-us.php'],
 ];
 $footer_legal = [
     ['label' => 'Privacy Policy',        'url' => '#'],

@@ -2541,7 +2541,7 @@ $brands: (
 /* ==========================================================================
    16. Social — white section
    Mosaic: [tall] [img] [img] [tall] / [tall] [Instagram card] [tall] on desktop.
-   Account cards: 6 across on desktop, 3 on tablet, 2 on mobile.
+   Accounts: one row of 5 ≥992 (vertical hairlines), 2 columns on tablet, list rows on phones.
    ========================================================================== */
 
 .social {
@@ -2710,35 +2710,53 @@ $brands: (
         line-height: 1.1;
     }
 
-    // Account cards
-    // Account row — no boxes: items divided by thin vertical hairlines on desktop
+    // Account row — no boxes: hairline top + bottom, rows on phones,
+    // 2 columns on tablets (odd last item full width), one row of columns with vertical hairlines ≥992
     &__accounts {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        row-gap: 36px;
         margin-top: fluid(48px, 72px);
+        border-block: 1px solid $line;
 
-        // odd count on mobile: last item centred across both columns
-        > li:last-child:nth-child(odd) {
-            grid-column: 1 / -1;
+        > li + li {
+            border-top: 1px solid $line;
         }
 
         @include respond(md) {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
+
+            > li + li {
+                border-top: 0;
+            }
+
+            > li:nth-child(n + 3) {
+                border-top: 1px solid $line;
+            }
+
+            > li:nth-child(even) {
+                border-left: 1px solid $line;
+            }
 
             > li:last-child:nth-child(odd) {
-                grid-column: auto;
+                grid-column: 1 / -1;
             }
         }
 
         @include respond(lg) {
-            display: flex;
-            justify-content: space-between;
+            grid-auto-columns: 1fr;
+            grid-auto-flow: column;
+            grid-template-columns: none;
 
             > li {
-                flex: 1;
+                &:nth-child(n) {
+                    border-top: 0;
+                    border-left: 0;
+                }
 
-                & + li {
+                &:last-child:nth-child(odd) {
+                    grid-column: auto;
+                }
+
+                &:nth-child(n + 2) {
                     border-left: 1px solid $line;
                 }
             }
@@ -2765,30 +2783,78 @@ $social-brands: (
 }
 
 // One account — open layout (no box), themed in its platform's colour:
-// brand icon with a soft halo ring · Didot name (brand underline draws on hover) · brand label
+// brand icon · name + label · round ↗ arrow. Hover: brand line draws along the top edge,
+// a faint brand wash rises from it, the icon lifts and the arrow fills with the brand colour.
 .social-card {
-    --brand-halo: color-mix(in srgb, var(--brand) 18%, transparent);
+    --brand-halo: color-mix(in srgb, var(--brand) 22%, transparent);
 
-    display: flex;
-    flex-direction: column;
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
-    gap: 10px;
-    padding-inline: 8px;
+    column-gap: 16px;
+    height: 100%;
+    padding: 20px 4px;
     color: $royal-blue;
-    text-align: center;
+    isolation: isolate;
+
+    @include respond(md) {
+        padding: 24px fluid(16px, 24px);
+    }
+
+    // desktop columns: icon · arrow on top, name + label below
+    @include respond(lg) {
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "icon arrow"
+            "text text";
+        align-items: start;
+        row-gap: 22px;
+        padding: 32px fluid(16px, 28px, 992px, 1400px) 30px;
+
+        .social-card__icon  { grid-area: icon; }
+        .social-card__arrow { grid-area: arrow; }
+        .social-card__text  { grid-area: text; }
+    }
+
+    // brand line on the top edge
+    &::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--brand);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.6s $ease;
+    }
+
+    // faint brand wash
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(180deg, color-mix(in srgb, var(--brand) 7%, transparent), transparent 85%);
+        opacity: 0;
+        @include transition(opacity);
+    }
 
     // icon: brand-filled circle inside a soft halo ring
     &__icon {
         position: relative;
         display: grid;
         place-items: center;
-        width: 58px;
-        height: 58px;
-        margin-bottom: 8px;
-        padding: 16px;
+        width: 48px;
+        height: 48px;
+        margin: 5px;
+        padding: 13px;
         border-radius: 50%;
         background-color: var(--brand);
         color: var(--brand-text);
+        box-shadow: 0 10px 20px -12px var(--brand);
         transition: transform $duration $ease;
 
         svg {
@@ -2799,31 +2865,25 @@ $social-brands: (
         &::after {
             content: "";
             position: absolute;
-            inset: -7px;
+            inset: -5px;
             border: 1px solid var(--brand-halo);
             border-radius: 50%;
             transition: inset $duration $ease, border-color $duration $ease;
         }
     }
 
-    &__name {
-        position: relative;
-        padding-bottom: 4px;
-        font-family: $heading-font;
-        font-size: rem(21px);
-        line-height: 1.2;
+    &__text {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        min-width: 0;
+    }
 
-        &::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 1px;
-            background-color: var(--brand);
-            transform: scaleX(0);
-            @include transition(transform);
-        }
+    &__name {
+        font-family: $heading-font;
+        font-size: fluid(18px, 20px);
+        line-height: 1.2;
+        white-space: nowrap;
     }
 
     &__action {
@@ -2831,28 +2891,59 @@ $social-brands: (
         font-weight: 700;
         letter-spacing: 0.18em;
         text-transform: uppercase;
+        white-space: nowrap;
         color: var(--brand);
     }
 
-    // not used in the open layout
+    // round arrow pointing up-right
     &__arrow {
-        display: none;
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        padding: 0 9px;
+        border: 1px solid $line;
+        border-radius: 50%;
+        color: $royal-blue;
+        transition: background-color $duration $ease, border-color $duration $ease, color $duration $ease;
+
+        svg {
+            width: 100%;
+            height: auto;
+            transform: rotate(-45deg);
+            transition: transform $duration $ease;
+        }
     }
 
-    &:hover {
+    &:hover,
+    &:focus-visible {
         color: $royal-blue;
 
+        &::before {
+            transform: scaleX(1);
+        }
+
+        &::after {
+            opacity: 1;
+        }
+
         .social-card__icon {
-            transform: translateY(-4px);
+            transform: translateY(-3px);
 
             &::after {
-                inset: -11px;
-                border-color: color-mix(in srgb, var(--brand) 40%, transparent);
+                inset: -8px;
+                border-color: color-mix(in srgb, var(--brand) 45%, transparent);
             }
         }
 
-        .social-card__name::after {
-            transform: scaleX(1);
+        .social-card__arrow {
+            border-color: var(--brand);
+            background-color: var(--brand);
+            color: var(--brand-text);
+
+            svg {
+                transform: rotate(-45deg) translateX(2px);
+            }
         }
     }
 }
@@ -2925,7 +3016,6 @@ $social-brands: (
             width: 100%;
             height: 100%;
             border: 0;
-            filter: grayscale(0.9) sepia(0.15) contrast(1.05); // soft, on-palette map
         }
     }
 
@@ -3084,6 +3174,424 @@ $social-brands: (
     }
 }
 
+// ---- Contact page v2 (user: "much better", details first, form last) ----
+
+// 1 · Ways to reach us — v2 (user: "change the UI"): one white panel pulled up over the hero, gold top edge.
+// 2 columns ≥768 (Call or WhatsApp · Email), stacked on phones. Each column: icon + label (+ live "Quickest reply"
+// status) · big value · text · theme buttons. WhatsApp column has a soft
+// cream wash. Footer strip inside the panel: "Follow our days in Ubud" + ring icons.
+.reach {
+    padding-bottom: fluid(56px, 88px);
+
+    &__panel {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        overflow: hidden;
+        margin-top: fluid(-48px, -80px);
+        border-radius: fluid(20px, 28px);
+        background-color: $white;
+        box-shadow: 0 40px 70px -48px rgba($royal-blue-dark, 0.5);
+
+        // gold top edge (follows the rounded corners, sits above the column backgrounds)
+        &::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            border-top: 3px solid $amber-gold;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        @include respond(md) {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    &__item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: fluid(24px, 36px) fluid(22px, 40px);
+        isolation: isolate;
+
+        & + & {
+            border-top: 1px solid $line;
+
+            @include respond(md) {
+                border-top: 0;
+                border-left: 1px solid $line;
+            }
+        }
+    }
+
+    &__item--whatsapp {
+        background: linear-gradient(135deg, $cream, rgba($cream, 0.4) 75%);
+    }
+
+    // icon · label · status in one row
+    &__top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+        margin-bottom: 4px;
+    }
+
+    &__icon {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        padding: 11px;
+        border: 1px solid rgba($amber-gold, 0.55);
+        border-radius: 50%;
+        color: $amber-gold-dark;
+        @include transition(color, background-color, border-color);
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    &__item--whatsapp &__icon {
+        border-color: $royal-blue;
+        background-color: $royal-blue;
+        color: $amber-gold-light;
+    }
+
+    &__item:hover &__icon {
+        border-color: $royal-blue;
+        background-color: $royal-blue;
+        color: $cream;
+    }
+
+    &__label {
+        @extend %stat-label;
+        color: $amber-gold-dark;
+        letter-spacing: 0.22em;
+    }
+
+    // live status: small pulsing dot + text
+    &__tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 12px 4px 10px;
+        border: 1px solid rgba($amber-gold, 0.45);
+        border-radius: 999px;
+        background-color: $white;
+        font-size: rem(10px);
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: $royal-blue;
+
+        &::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #25D366; // WhatsApp green (platform colour)
+            box-shadow: 0 0 0 0 rgba(#25D366, 0.5);
+            animation: reach-pulse 2.4s ease-out infinite;
+        }
+    }
+
+    &__value {
+        font-family: $heading-font;
+        font-size: fluid(22px, 28px);
+        font-weight: 400;
+        line-height: 1.2;
+        color: $royal-blue;
+        @include transition(color);
+
+        &:hover {
+            color: $amber-gold-dark;
+        }
+    }
+
+    // the email address is long — a bit smaller so it fits on one line on desktop
+    &__item--email &__value {
+        font-size: fluid(18px, 22px);
+    }
+
+    &__text {
+        max-width: 440px;
+        font-size: rem(14px);
+        line-height: 1.6;
+        color: $text-muted;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 10px;
+
+        @include respond(sm-down) {
+            width: 100%;
+
+            .theme-btn {
+                flex: 1 1 100%;
+            }
+        }
+    }
+
+    // footer strip across both columns
+    &__social {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 12px 24px;
+        padding: 14px fluid(22px, 40px);
+        border-top: 1px solid $line;
+        background-color: $white;
+
+        @include respond(md) {
+            grid-column: 1 / -1;
+            justify-content: space-between;
+        }
+
+        > span {
+            @extend %stat-label;
+        }
+    }
+}
+
+@keyframes reach-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(#25D366, 0.5); }
+    70%  { box-shadow: 0 0 0 8px rgba(#25D366, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(#25D366, 0); }
+}
+
+// 2 · Find us — head (title left · text right), big toned map with the address card (7fr) · getting to Ubud list (5fr)
+.find-us {
+    &__head {
+        display: grid;
+        gap: 14px;
+        margin-bottom: fluid(32px, 48px);
+
+        @include respond(lg) {
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            align-items: end;
+            gap: fluid(48px, 96px, 992px, 1400px);
+        }
+    }
+
+    &__grid {
+        display: grid;
+        gap: fluid(40px, 56px);
+
+        @include respond(lg) {
+            grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+            align-items: stretch;
+            gap: fluid(40px, 72px, 992px, 1400px);
+        }
+    }
+
+    &__map {
+        position: relative;
+        min-height: fluid(380px, 560px);
+        border-radius: fluid(16px, 24px);
+        overflow: hidden;
+        box-shadow: 0 40px 70px -50px rgba($royal-blue-dark, 0.5);
+
+        iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    }
+
+    &__travel {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .accent-text {
+            margin-bottom: 8px;
+            font-size: fluid(30px, 40px);
+        }
+
+        li {
+            display: grid;
+            grid-template-columns: 64px minmax(0, 1fr);
+            gap: 18px;
+            padding-block: fluid(18px, 24px);
+            border-top: 1px solid $line;
+
+            &:last-child {
+                border-bottom: 1px solid $line;
+            }
+        }
+
+        h3 {
+            font-size: fluid(19px, 22px);
+            line-height: 1.25;
+        }
+
+        p {
+            margin-top: 6px;
+            font-size: rem(15px);
+            line-height: 1.65;
+            color: $text-muted;
+        }
+    }
+
+    &__icon {
+        display: grid;
+        place-items: center;
+        width: 64px;
+        height: 64px;
+        padding: 14px;
+        border: 1px solid rgba($amber-gold, 0.5);
+        border-radius: 50%;
+        background-color: $cream;
+        color: $royal-blue;
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+// 3 · Enquiry (last) — what happens next (5fr) · white form panel with a gold top edge (7fr)
+.enquire {
+    &__grid {
+        display: grid;
+        gap: fluid(40px, 56px);
+
+        @include respond(lg) {
+            grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+            align-items: start;
+            gap: fluid(48px, 96px, 992px, 1400px);
+        }
+    }
+
+    &__intro {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        @include respond(lg) {
+            position: sticky;
+            top: calc(#{$header-height} + 40px);
+        }
+    }
+
+    &__steps {
+        margin-top: 12px;
+
+        li {
+            display: grid;
+            grid-template-columns: 56px minmax(0, 1fr);
+            gap: 12px;
+            padding-block: 18px;
+            border-top: 1px solid $line;
+        }
+
+        strong {
+            display: block;
+            font-family: $heading-font;
+            font-weight: 400;
+            font-size: fluid(18px, 20px);
+            color: $royal-blue;
+        }
+
+        small {
+            display: block;
+            margin-top: 4px;
+            font-size: rem(14px);
+            line-height: 1.6;
+            color: $text-muted;
+        }
+    }
+
+    &__num {
+        font-family: $heading-font;
+        font-weight: 300;
+        font-size: fluid(28px, 34px);
+        line-height: 1;
+        color: $amber-gold;
+    }
+
+    &__card {
+        padding: fluid(28px, 56px);
+        border-top: 3px solid $amber-gold;
+        background-color: $white;
+        box-shadow: 0 40px 70px -50px rgba($royal-blue-dark, 0.45);
+    }
+}
+
+// Course choice as pill chips (radio buttons) — selected = royal blue
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-width: 0;
+    margin: 0 0 10px;
+    padding: 0;
+    border: 0;
+
+    legend {
+        @extend %stat-label;
+        float: left; // keeps the legend inside the flex flow
+        width: 100%;
+        margin-bottom: 12px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        color: $amber-gold-dark;
+    }
+}
+
+.chip {
+    position: relative;
+    cursor: pointer;
+
+    input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    span {
+        display: inline-block;
+        padding: 9px 16px;
+        border: 1px solid $line;
+        border-radius: 999px;
+        font-family: $heading-font;
+        font-size: rem(14px);
+        color: $text-muted;
+        @include transition(color, background-color, border-color);
+    }
+
+    &:hover span {
+        border-color: $amber-gold;
+        color: $royal-blue;
+    }
+
+    input:checked + span {
+        border-color: $royal-blue;
+        background-color: $royal-blue;
+        color: $cream;
+    }
+
+    input:focus-visible + span {
+        outline: 2px solid $amber-gold;
+        outline-offset: 2px;
+    }
+}
+
 // Form — 2 columns on tablet+, message full width
 .contact-form {
     display: grid;
@@ -3210,7 +3718,7 @@ $social-brands: (
 
 /* ==========================================================================
    19. Gallery — on .section-bg (cream), before Contact
-   Editorial grid: tall · wide/2 small · tall, panorama below. Custom cream lightbox.
+   Editorial grid (7 photos): tall · wide over 2 squares · tall, two wide photos below. Custom cream lightbox.
    ========================================================================== */
 
 .gallery {
@@ -3259,33 +3767,39 @@ $social-brands: (
             transition: transform 1.2s $ease;
         }
 
-        // mobile / tablet placement
+        // mobile / tablet: portraits side by side (2 rows), square pair, wide photos full width
         &--1,
         &--3 {
             grid-row: span 2;
         }
 
         &--2,
-        &--6 {
+        &--6,
+        &--7 {
             grid-column: 1 / -1;
         }
 
-        // desktop placement
+        // desktop: portrait · wide over 2 squares · portrait, then two wide photos below
         @include respond(lg) {
-            &--1 { grid-column: 1;     grid-row: 1 / span 6; } // full-height portrait
-            &--2 { grid-column: 2 / 4; grid-row: 1 / span 2; }
-            &--3 { grid-column: 4;     grid-row: 1 / span 4; }
-            &--4 { grid-column: 2;     grid-row: 3 / span 2; }
-            &--5 { grid-column: 3;     grid-row: 3 / span 2; }
-            &--6 { grid-column: 2 / -1; grid-row: 5 / span 2; } // panorama under cols 2–4
+            &--1 { grid-column: 1;      grid-row: 1 / span 4; }
+            &--2 { grid-column: 2 / 4;  grid-row: 1 / span 2; }
+            &--3 { grid-column: 4;      grid-row: 1 / span 4; }
+            &--4 { grid-column: 2;      grid-row: 3 / span 2; }
+            &--5 { grid-column: 3;      grid-row: 3 / span 2; }
+            &--6 { grid-column: 1 / 3;  grid-row: 5 / span 2; }
+            &--7 { grid-column: 3 / -1; grid-row: 5 / span 2; }
+        }
+
+        &--1 img {
+            object-position: center 70%; // keep the host + tea table in view
+        }
+
+        &--3 img {
+            object-position: center 40%; // lotus emblem + stairs
         }
 
         &--5 img {
-            object-position: center 75%;
-        }
-
-        &--6 img {
-            object-position: center 72%; // panorama crop of the dining hall
+            object-position: 40% center; // candle-lit table
         }
 
         &:hover,
@@ -3375,13 +3889,6 @@ $social-brands: (
         letter-spacing: 0.2em;
         text-transform: uppercase;
         color: $amber-gold-dark;
-    }
-
-    &__title {
-        font-family: $heading-font;
-        font-size: fluid(20px, 26px);
-        font-weight: 400;
-        color: $royal-blue;
     }
 
     &__count {
